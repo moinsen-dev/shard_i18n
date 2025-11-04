@@ -1,0 +1,40 @@
+name: shard_i18n_migrator
+description: Automated migration tool for converting Flutter apps to use shard_i18n internationalization system
+version: 0.1.0
+repository: https://github.com/moinsen-dev/shard_i18n
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  # Core Dart analysis
+  analyzer: ^6.0.0
+
+  # File system operations
+  path: ^1.9.0
+  glob: ^2.1.2
+
+  # YAML configuration
+  yaml: ^3.1.2
+
+  # CLI utilities
+  args: ^2.4.2
+  cli_util: ^0.4.0
+
+  # Interactive prompts
+  interact: ^2.2.0
+
+  # Logging and output
+  logger: ^2.0.2
+
+  # JSON manipulation
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
+  build_runner: ^2.4.0
+  json_serializable: ^6.7.0
+
+executables:
+  shard_i18n_migrator:
