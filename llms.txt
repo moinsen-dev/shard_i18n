@@ -1,0 +1,404 @@
+# shard_i18n
+
+> Runtime, sharded, msgid-based internationalization for Flutter - no code generation required
+
+shard_i18n is a production-ready i18n library for Flutter that provides:
+- Direct msgid usage in code (`context.t('Sign in')`)
+- Sharded JSON files per locale to prevent merge conflicts
+- Dynamic language switching without app restart
+- CLDR-based pluralization for 15+ languages
+- Interpolation with named parameters
+- Locale fallback chain (de-DE → de → en → msgid)
+
+## Installation
+
+```yaml
+dependencies:
+  shard_i18n: ^0.1.0
+
+flutter:
+  assets:
+    - assets/i18n/
+```
+
+## Quick Start
+
+### 1. Bootstrap in main()
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:shard_i18n/shard_i18n.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Bootstrap with initial locale
+  await ShardI18n.instance.bootstrap(Locale('en'));
+
+  runApp(MyApp());
+}
+```
+
+### 2. Wire up MaterialApp
+
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: ShardI18n.instance,
+      builder: (_, __) {
+        return MaterialApp(
+          locale: ShardI18n.instance.locale,
+          supportedLocales: ShardI18n.instance.supportedLocales,
+          home: HomePage(),
+        );
+      },
+    );
+  }
+}
+```
+
+### 3. Use translations in widgets
+
+```dart
+// Simple translation
+Text(context.t('Sign in'))
+
+// With interpolation
+Text(context.t('Hello, {name}!', params: {'name': 'World'}))
+
+// Plural forms
+Text(context.tn('items_count', count: 5))
+```
+
+## Translation File Structure
+
+Create sharded JSON files per locale:
+
+```
+assets/i18n/
+  en/
+    core.json
+    auth.json
+  de/
+    core.json
+    auth.json
+```
+
+**Example: assets/i18n/en/auth.json**
+
+```json
+{
+  "Sign in": "Sign in",
+  "Hello, {name}!": "Hello, {name}!",
+  "items_count": {
+    "one": "{count} item",
+    "other": "{count} items"
+  }
+}
+```
+
+**German: assets/i18n/de/auth.json**
+
+```json
+{
+  "Sign in": "Anmelden",
+  "Hello, {name}!": "Hallo, {name}!",
+  "items_count": {
+    "one": "{count} Artikel",
+    "other": "{count} Artikel"
+  }
+}
+```
+
+## Core API
+
+### ShardI18n Singleton
+
+```dart
+// Bootstrap before runApp (required)
+await ShardI18n.instance.bootstrap(Locale('en'));
+
+// Change locale at runtime
+await ShardI18n.instance.setLocale(Locale('de'));
+
+// Get current locale
+ShardI18n.instance.locale
+
+// Get supported locales (discovered from assets)
+ShardI18n.instance.supportedLocales
+
+// Check if bootstrapped
+ShardI18n.instance.isBootstrapped
+
+// Translate manually (without context)
+ShardI18n.instance.translate('Hello, {name}!', params: {'name': 'Alice'})
+
+// Pluralize manually (without context)
+ShardI18n.instance.plural('items_count', count: 5)
+
+// Register custom plural rule
+ShardI18n.instance.registerPluralRule('fr', (n) => n <= 1 ? 'one' : 'other')
+
+// Clear cache (for testing)
+ShardI18n.instance.clearCache()
+
+// Enable/disable missing key logging
+ShardI18n.instance.debugLogMissingKeys = true
+```
+
+### BuildContext Extensions
+
+```dart
+// Translate with interpolation
+context.t(String key, {Map<String, Object?> params = const {}})
+
+// Pluralize with count
+context.tn(String key, {required num count, Map<String, Object?> params = const {}})
+```
+
+## Features
+
+### Msgid vs Stable IDs
+
+**Natural msgid (recommended):**
+```dart
+Text(context.t('Sign in'))
+```
+
+**Stable IDs (when English copy is volatile):**
+```dart
+Text(context.t('auth.sign_in'))
+```
+
+Both work! The translation key is looked up in the JSON files.
+
+### Interpolation
+
+Named parameters using `{placeholder}` syntax:
+
+```json
+{
+  "Hello, {name}!": "Hallo, {name}!"
+}
+```
+
+```dart
+context.t('Hello, {name}!', params: {'name': 'Uli'})
+```
+
+### Plurals
+
+CLDR-style plural forms:
+
+```json
+{
+  "items_count": {
+    "one": "{count} item",
+    "other": "{count} items"
+  }
+}
+```
+
+**Russian (complex one/few/many/other):**
+```json
+{
+  "items_count": {
+    "one": "{count} предмет",
+    "few": "{count} предмета",
+    "many": "{count} предметов",
+    "other": "{count} предмета"
+  }
+}
+```
+
+```dart
+context.tn('items_count', count: 5)
+```
+
+Supported plural rules: en, de, nl, sv, no, da, fi, it, es, pt, tr, ro, bg, el, hu, ru, uk, sr, hr, bs, pl, cs, sk, fr, lt, lv
+
+### Fallback Strategy
+
+```
+1. Locale + country (e.g., de-DE)
+   ↓ (if missing)
+2. Locale language (e.g., de)
+   ↓ (if missing)
+3. English (en)
+   ↓ (if missing)
+4. Msgid/stable ID itself
+```
+
+### Dynamic Locale Switching
+
+```dart
+// Change language at runtime
+await ShardI18n.instance.setLocale(Locale('de'));
+```
+
+The AnimatedBuilder wrapper automatically rebuilds the UI with new translations. No app restart needed!
+
+## Language Switching Example
+
+With BLoC pattern:
+
+```dart
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shard_i18n/shard_i18n.dart';
+
+class LanguageCubit extends Cubit<Locale> {
+  LanguageCubit(super.initialLocale);
+
+  static Future<Locale> loadInitial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('app_locale');
+    if (saved != null) {
+      final parts = saved.split('-');
+      return parts.length == 2 ? Locale(parts[0], parts[1]) : Locale(parts[0]);
+    }
+    return WidgetsBinding.instance.platformDispatcher.locale;
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    if (state == locale) return;
+    await ShardI18n.instance.setLocale(locale);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('app_locale', locale.toString());
+    emit(locale);
+  }
+}
+```
+
+Then in widgets:
+
+```dart
+// Switch language
+await context.read<LanguageCubit>().setLocale(Locale('de'));
+```
+
+## Performance
+
+- **Startup**: Only current locale shards loaded (lazy, async)
+- **Locale switch**: ~50-100ms for typical app
+- **Lookups**: O(1) HashMap lookups in memory
+- **Cache**: Translation files cached per locale tag
+- **Best practice**: Keep shards <5-10k lines each
+
+## Best Practices
+
+### Sharded Files
+
+Organize by feature to prevent merge conflicts:
+
+```
+assets/i18n/
+  en/
+    core.json      # App-wide strings
+    auth.json      # Authentication feature
+    settings.json  # Settings feature
+  de/
+    core.json
+    auth.json
+    settings.json
+```
+
+### Naming Conventions
+
+**UI text (natural msgid):**
+```dart
+context.t('Sign in')
+context.t('Welcome to our app')
+```
+
+**Stable IDs (for volatile copy):**
+```dart
+context.t('auth.welcome_message')
+context.t('settings.theme_label')
+```
+
+**Plurals:**
+```dart
+context.tn('items_count', count: n)
+context.tn('users_online', count: n)
+```
+
+## Testing
+
+### Unit Tests
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shard_i18n/shard_i18n.dart';
+
+void main() {
+  test('interpolation works', () {
+    final result = ShardI18n.instance.translate(
+      'Hello, {name}!',
+      params: {'name': 'World'},
+    );
+    expect(result, equals('Hello, World!'));
+  });
+}
+```
+
+### Widget Tests
+
+```dart
+testWidgets('displays translated text', (tester) async {
+  await ShardI18n.instance.bootstrap(Locale('de'));
+  await tester.pumpWidget(MyApp());
+  expect(find.text('Anmelden'), findsOneWidget); // German "Sign in"
+});
+```
+
+## Common Patterns
+
+### Conditional Text
+
+```dart
+Text(context.t(isLoggedIn ? 'Sign out' : 'Sign in'))
+```
+
+### List Items
+
+```dart
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) {
+    return ListTile(
+      title: Text(context.t(items[index].nameKey)),
+    );
+  },
+)
+```
+
+### Error Messages
+
+```json
+{
+  "error.network": "Network connection failed",
+  "error.timeout": "Request timed out",
+  "error.unknown": "An unknown error occurred"
+}
+```
+
+```dart
+showDialog(
+  context: context,
+  builder: (_) => AlertDialog(
+    title: Text(context.t('Error')),
+    content: Text(context.t('error.network')),
+  ),
+);
+```
+
+## Package Info
+
+- **Package**: shard_i18n
+- **Repository**: https://github.com/moinsen-dev/shard_i18n
+- **License**: MIT
+- **Platform**: Flutter (iOS, Android, Web, Desktop)
+- **Minimum SDK**: Dart ^3.9.2, Flutter >=1.17.0
