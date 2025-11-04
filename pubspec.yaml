@@ -1,0 +1,32 @@
+name: shard_i18n
+description: Runtime, sharded, msgid-based i18n for Flutter with no codegen. Supports dynamic language switching, plurals, interpolation, and AI-powered translation CLI.
+version: 0.1.0
+homepage: https://github.com/moinsen-dev/shard_i18n
+repository: https://github.com/moinsen-dev/shard_i18n
+issue_tracker: https://github.com/moinsen-dev/shard_i18n/issues
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # CLI dependencies (optional, only needed if using the CLI tool)
+  args: ^2.4.2
+  http: ^1.1.2
+  path: ^1.8.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.8
+
+# CLI executables
+executables:
+  shard_i18n_cli:
+
+flutter:

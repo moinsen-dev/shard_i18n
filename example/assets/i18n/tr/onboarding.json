@@ -1,0 +1,17 @@
+{
+  "Skip": "Atla",
+  "Next": "İleri",
+  "Get Started": "Başlayın",
+  "onboarding_welcome_description": "Kod oluşturmayı ve birleştirme çakışmalarını ortadan kaldıran Flutter için modern bir uluslararasılaştırma çözümü.",
+  "onboarding_feature_no_codegen": "Kod oluşturma gerekmez",
+  "onboarding_feature_runtime": "Saf çalışma zamanı aramaları",
+  "onboarding_feature_sharded": "Ekip işbirliği için özellik bazlı parçalama",
+  "onboarding_simple_description": "Sezgisel bağlam uzantılarıyla kodunuzda doğrudan doğal İngilizce kullanın. İnterpolasyon ve çoğullar sorunsuz çalışır. Yukarıdan dil değiştirmeyi deneyin!",
+  "onboarding_sharded_description": "Çevirileri ayrı JSON dosyalarında özellik bazında düzenleyin. Her ekip çakışma olmadan kendi özelliği üzerinde çalışabilir.",
+  "onboarding_benefit_conflicts": "Büyük ekiplerde daha az birleştirme çakışması",
+  "onboarding_benefit_loading": "Daha hızlı yükleme - sadece geçerli dil",
+  "onboarding_benefit_maintenance": "Daha kolay bakım ve sahiplik",
+  "onboarding_ready_description": "Hazırsınız! Uygulamanızda shard_i18n kullanmaya başlayın. Ne kadar kolay olduğunu görmek için örnek koda göz atın.",
+  "onboarding_tip": "İpucu: Okunabilir dizeler için msgid veya sık değişen metinler için kararlı kimlikler kullanın.",
+  "Learn More": "Daha Fazla Bilgi"
+}

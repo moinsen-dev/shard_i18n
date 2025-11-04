@@ -1,0 +1,16 @@
+{
+  "Welcome to shard_i18n": "shard_i18n'e hoş geldiniz",
+  "A runtime, sharded i18n solution for Flutter": "Flutter için çalışma zamanı tabanlı, parçalı i18n çözümü",
+  "Features": "Özellikler",
+  "No code generation": "Kod oluşturma yok",
+  "Sharded translations": "Parçalı çeviriler",
+  "Dynamic locale switching": "Dinamik dil değiştirme",
+  "Msgid-based lookups": "Msgid tabanlı aramalar",
+  "Change Language": "Dili Değiştir",
+  "Select Language": "Dil Seçin",
+  "Add item": "Öğe ekle",
+  "Reset": "Sıfırla",
+  "items_count": {
+    "other": "{count} öğe"
+  }
+}

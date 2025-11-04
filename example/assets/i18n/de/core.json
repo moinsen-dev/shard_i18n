@@ -1,0 +1,17 @@
+{
+  "Welcome to shard_i18n": "Willkommen bei shard_i18n",
+  "A runtime, sharded i18n solution for Flutter": "Eine Laufzeit-basierte, shardierte i18n-Lösung für Flutter",
+  "Features": "Funktionen",
+  "No code generation": "Keine Code-Generierung",
+  "Sharded translations": "Shardierte Übersetzungen",
+  "Dynamic locale switching": "Dynamischer Sprachwechsel",
+  "Msgid-based lookups": "Msgid-basierte Nachschläge",
+  "Change Language": "Sprache ändern",
+  "Select Language": "Sprache auswählen",
+  "Add item": "Element hinzufügen",
+  "Reset": "Zurücksetzen",
+  "items_count": {
+    "one": "{count} Element",
+    "other": "{count} Elemente"
+  }
+}

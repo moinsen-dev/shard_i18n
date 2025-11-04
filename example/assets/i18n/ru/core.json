@@ -1,0 +1,19 @@
+{
+  "Welcome to shard_i18n": "Добро пожаловать в shard_i18n",
+  "A runtime, sharded i18n solution for Flutter": "Решение i18n для Flutter с динамической загрузкой и сегментацией",
+  "Features": "Возможности",
+  "No code generation": "Без генерации кода",
+  "Sharded translations": "Сегментированные переводы",
+  "Dynamic locale switching": "Динамическая смена языка",
+  "Msgid-based lookups": "Поиск по msgid",
+  "Change Language": "Сменить язык",
+  "Select Language": "Выберите язык",
+  "Add item": "Добавить элемент",
+  "Reset": "Сбросить",
+  "items_count": {
+    "one": "{count} предмет",
+    "few": "{count} предмета",
+    "many": "{count} предметов",
+    "other": "{count} предмета"
+  }
+}

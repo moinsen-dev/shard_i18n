@@ -1,0 +1,17 @@
+{
+  "Welcome to shard_i18n": "Welcome to shard_i18n",
+  "A runtime, sharded i18n solution for Flutter": "A runtime, sharded i18n solution for Flutter",
+  "Features": "Features",
+  "No code generation": "No code generation",
+  "Sharded translations": "Sharded translations",
+  "Dynamic locale switching": "Dynamic locale switching",
+  "Msgid-based lookups": "Msgid-based lookups",
+  "Change Language": "Change Language",
+  "Select Language": "Select Language",
+  "Add item": "Add item",
+  "Reset": "Reset",
+  "items_count": {
+    "one": "{count} item",
+    "other": "{count} items"
+  }
+}

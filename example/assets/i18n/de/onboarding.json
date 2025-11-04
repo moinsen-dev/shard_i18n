@@ -1,0 +1,17 @@
+{
+  "Skip": "Überspringen",
+  "Next": "Weiter",
+  "Get Started": "Loslegen",
+  "onboarding_welcome_description": "Eine moderne Internationalisierungslösung für Flutter, die Code-Generierung und Merge-Konflikte eliminiert.",
+  "onboarding_feature_no_codegen": "Keine Code-Generierung erforderlich",
+  "onboarding_feature_runtime": "Reine Laufzeit-Lookups",
+  "onboarding_feature_sharded": "Nach Features aufgeteilt für Teamarbeit",
+  "onboarding_simple_description": "Verwenden Sie natürliches Englisch direkt in Ihrem Code mit intuitiven Context-Erweiterungen. Interpolation und Plurale funktionieren nahtlos. Probieren Sie oben die Sprachwahl aus!",
+  "onboarding_sharded_description": "Organisieren Sie Übersetzungen nach Features in separaten JSON-Dateien. Jedes Team kann an seinem eigenen Feature ohne Konflikte arbeiten.",
+  "onboarding_benefit_conflicts": "Weniger Merge-Konflikte in großen Teams",
+  "onboarding_benefit_loading": "Schnelleres Laden - nur aktuelle Sprache",
+  "onboarding_benefit_maintenance": "Einfachere Wartung und Eigentümerschaft",
+  "onboarding_ready_description": "Sie sind startklar! Beginnen Sie mit der Verwendung von shard_i18n in Ihrer App. Schauen Sie sich den Beispielcode an, um zu sehen, wie einfach es ist.",
+  "onboarding_tip": "Tipp: Verwenden Sie msgid für lesbare Strings oder stabile IDs für sich häufig ändernde Texte.",
+  "Learn More": "Mehr erfahren"
+}

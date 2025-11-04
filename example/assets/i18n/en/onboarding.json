@@ -1,0 +1,17 @@
+{
+  "Skip": "Skip",
+  "Next": "Next",
+  "Get Started": "Get Started",
+  "onboarding_welcome_description": "A modern internationalization solution for Flutter that eliminates code generation and merge conflicts.",
+  "onboarding_feature_no_codegen": "No code generation required",
+  "onboarding_feature_runtime": "Pure runtime lookups",
+  "onboarding_feature_sharded": "Sharded by feature for team collaboration",
+  "onboarding_simple_description": "Use natural English directly in your code with intuitive context extensions. Interpolation and plurals work seamlessly. Try changing the language above!",
+  "onboarding_sharded_description": "Organize translations by feature in separate JSON files. Each team can work on their own feature without conflicts.",
+  "onboarding_benefit_conflicts": "Fewer merge conflicts in large teams",
+  "onboarding_benefit_loading": "Faster loading - only current locale",
+  "onboarding_benefit_maintenance": "Easier maintenance and ownership",
+  "onboarding_ready_description": "You're all set! Start using shard_i18n in your app. Check out the example code to see how easy it is.",
+  "onboarding_tip": "Tip: Use msgid for readable strings, or stable IDs for volatile copy that changes frequently.",
+  "Learn More": "Learn More"
+}
