@@ -1,9 +1,0 @@
-analyzer:
-  errors:
-    curly_braces_in_flow_control_structures: ignore
-include: package:lints/recommended.yaml
-
-linter:
-  rules:
-    # Disable print warning for CLI tool - print is appropriate for verbose output
-    avoid_print: false

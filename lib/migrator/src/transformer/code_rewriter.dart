@@ -25,7 +25,6 @@ class CodeEdit {
 class CodeRewriter {
   final MigrationConfig config;
   final bool verbose;
-  // ignore: unused_field
   late final Logger _logger;
 
   CodeRewriter({
@@ -91,7 +90,7 @@ class CodeRewriter {
   }
 
   void _log(String message) {
-    if (verbose) print('[CodeRewriter] $message');
+    _logger.i(message);
   }
 }
 
@@ -101,7 +100,6 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
   final MigrationConfig config;
   final bool verbose;
   final List<CodeEdit> edits = [];
-  // ignore: unused_field
   late final Logger _logger;
 
   _StringRewriterVisitor({
@@ -152,9 +150,7 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
     // Match by offset (most reliable)
     for (final str in stringsToExtract) {
       if (str.line == node.offset) {
-        if (verbose)
-          print(
-              '[Rewriter] Matched by offset: ${str.value} (plural: ${str.isPlural})');
+        _logger.d('Matched by offset: ${str.value} (plural: ${str.isPlural})');
         return str;
       }
     }
@@ -163,15 +159,13 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
     final value = _getStringValue(node);
     for (final str in stringsToExtract) {
       if (str.value == value) {
-        if (verbose)
-          print(
-              '[Rewriter] Matched by value: ${str.value} (plural: ${str.isPlural})');
+        _logger.d('Matched by value: ${str.value} (plural: ${str.isPlural})');
         return str;
       }
     }
 
     if (value.isNotEmpty) {
-      if (verbose) print('[Rewriter] No match found for: $value');
+      _logger.d('No match found for: $value');
     }
 
     return null;
@@ -180,17 +174,13 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
   String? _generateReplacement(StringLiteral node, DetectedString detected) {
     // Check if this is a plural pattern FIRST (takes priority over interpolation)
     if (detected.isPlural) {
-      if (verbose)
-        print('[CodeRewriter] Detected plural pattern: ${detected.value}');
+      _logger.d('Detected plural pattern: ${detected.value}');
       final pluralReplacement = _generatePluralReplacement(node, detected);
       if (pluralReplacement != null) {
-        if (verbose)
-          print(
-              '[CodeRewriter] Generated plural replacement: $pluralReplacement');
+        _logger.d('Generated plural replacement: $pluralReplacement');
         return pluralReplacement;
       } else {
-        if (verbose)
-          print('[CodeRewriter] Plural replacement failed, falling back');
+        _logger.d('Plural replacement failed, falling back');
       }
       // If plural replacement failed, fall through to interpolation/simple
     }

@@ -2,14 +2,21 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:logger/logger.dart';
 
 import '../models/analysis_result.dart';
 
 /// Analyzes a Flutter project to find translatable strings
 class ProjectAnalyzer {
   final bool verbose;
+  late final Logger _logger;
 
-  const ProjectAnalyzer({this.verbose = false});
+  ProjectAnalyzer({this.verbose = false}) {
+    _logger = Logger(
+      printer: SimplePrinter(colors: false),
+      level: verbose ? Level.debug : Level.info,
+    );
+  }
 
   /// Analyze a list of Dart files
   Future<AnalysisResult> analyze(List<String> filePaths) async {
@@ -89,7 +96,7 @@ class ProjectAnalyzer {
   }
 
   void _log(String message) {
-    if (verbose) print('[ProjectAnalyzer] $message');
+    _logger.i(message);
   }
 }
 

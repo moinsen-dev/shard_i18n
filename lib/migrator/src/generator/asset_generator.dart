@@ -24,7 +24,6 @@ class AssetResult {
 class AssetGenerator {
   final MigrationConfig config;
   final bool verbose;
-  // ignore: unused_field
   late final Logger _logger;
 
   AssetGenerator({
@@ -94,6 +93,6 @@ class AssetGenerator {
   }
 
   void _log(String message) {
-    if (verbose) print('[AssetGenerator] $message');
+    _logger.i(message);
   }
 }

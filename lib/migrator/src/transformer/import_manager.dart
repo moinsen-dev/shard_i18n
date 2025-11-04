@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 /// Manages imports in Dart files
 class ImportManager {
   final bool verbose;
-  // ignore: unused_field
   late final Logger _logger;
 
   ImportManager({required this.verbose}) {
@@ -86,6 +85,6 @@ class ImportManager {
   }
 
   void _log(String message) {
-    if (verbose) print('[ImportManager] $message');
+    _logger.i(message);
   }
 }

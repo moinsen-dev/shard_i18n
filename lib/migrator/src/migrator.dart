@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:glob/glob.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;
 
 import 'config/migration_config.dart';
@@ -14,8 +15,14 @@ import 'validator/migration_validator.dart';
 /// Main orchestrator for Flutter app i18n migration
 class ShardI18nMigrator {
   final bool verbose;
+  late final Logger _logger;
 
-  const ShardI18nMigrator({this.verbose = false});
+  ShardI18nMigrator({this.verbose = false}) {
+    _logger = Logger(
+      printer: SimplePrinter(colors: false),
+      level: verbose ? Level.debug : Level.info,
+    );
+  }
 
   /// Analyze a project for migration without making changes
   Future<AnalysisResult> analyze(String projectPath) async {
@@ -155,8 +162,6 @@ class ShardI18nMigrator {
   }
 
   void _log(String message) {
-    if (verbose) {
-      print('[Migrator] $message');
-    }
+    _logger.i(message);
   }
 }

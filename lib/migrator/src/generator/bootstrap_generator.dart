@@ -10,7 +10,6 @@ import '../config/migration_config.dart';
 class BootstrapGenerator {
   final MigrationConfig config;
   final bool verbose;
-  // ignore: unused_field
   late final Logger _logger;
 
   final List<String> createdFiles = [];
@@ -205,6 +204,6 @@ class LanguageCubit extends Cubit<Locale> {
   }
 
   void _log(String message) {
-    if (verbose) print('[BootstrapGenerator] $message');
+    _logger.i(message);
   }
 }

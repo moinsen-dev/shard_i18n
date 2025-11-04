@@ -9,6 +9,7 @@ A tiny, production-ready i18n layer for Flutter that solves the pain points of t
 - ✅ **BLoC-ready** - Tiny `LanguageCubit` drives `Locale`; UI pulls strings via context
 - ✅ **Dynamic switching** - Change language at runtime without restart
 - ✅ **CLDR plurals** - Proper `one/few/many/other` forms for 15+ languages
+- ✅ **Automated migration** - Migrate existing apps automatically with `shard_i18n_migrator`
 - ✅ **AI-powered CLI** - Auto-translate missing keys with OpenAI/DeepL
 
 [![pub package](https://img.shields.io/pub/v/shard_i18n.svg)](https://pub.dev/packages/shard_i18n)
@@ -27,6 +28,7 @@ Large teams fight over one giant ARB/JSON file and slow codegen cycles. `shard_i
 | Cryptic generated method names | **Natural msgid** usage: `context.t('Sign in')` |
 | Complex setup for dynamic language switching | Built-in **locale switching** with `AnimatedBuilder` |
 | Manual plural form management | **CLDR-based** plural resolver for 15+ languages |
+| Time-consuming manual migration | **Automated migrator** extracts and transforms strings automatically |
 | Tedious translation workflows | **AI-powered CLI** to fill missing translations |
 
 ---
@@ -346,16 +348,44 @@ ShardI18n hot-loads the new locale's shards and notifies `AnimatedBuilder` to re
 
 ---
 
-## CLI Tool
+## CLI Tools
 
-Automate translation workflows with the included CLI.
+shard_i18n includes two powerful CLI tools to streamline your i18n workflow:
+
+### Installation
+
+**Global installation (recommended):**
+
+```bash
+# Install globally
+dart pub global activate shard_i18n
+
+# Use commands directly
+shard_i18n_cli verify
+shard_i18n_migrator analyze lib/
+```
+
+**Local execution (without global install):**
+
+```bash
+# Run from your project directory
+dart run shard_i18n_cli verify
+dart run shard_i18n_migrator analyze lib/
+```
+
+---
+
+## 1. Translation Management CLI (`shard_i18n_cli`)
+
+Manage and automate translation workflows.
 
 ### Verify Translations
 
 Check for missing keys and placeholder consistency:
 
 ```bash
-dart run shard_i18n_cli verify
+shard_i18n_cli verify
+# or: dart run shard_i18n_cli verify
 ```
 
 Output:
@@ -385,21 +415,21 @@ Auto-translate missing keys using AI:
 
 ```bash
 # Using OpenAI
-dart run shard_i18n_cli fill \
+shard_i18n_cli fill \
   --from=en \
   --to=de,tr,fr \
   --provider=openai \
   --key=$OPENAI_API_KEY
 
 # Using DeepL
-dart run shard_i18n_cli fill \
+shard_i18n_cli fill \
   --from=en \
   --to=de \
   --provider=deepl \
   --key=$DEEPL_API_KEY
 
 # Dry run (preview without writing)
-dart run shard_i18n_cli fill \
+shard_i18n_cli fill \
   --from=en \
   --to=de \
   --provider=openai \
@@ -408,6 +438,123 @@ dart run shard_i18n_cli fill \
 ```
 
 The CLI preserves `{placeholders}` and writes translated entries to the appropriate locale files.
+
+---
+
+## 2. Migration Tool (`shard_i18n_migrator`)
+
+Automatically migrate existing Flutter apps to use shard_i18n. The migrator analyzes your codebase, extracts translatable strings, and transforms your code to use the shard_i18n API.
+
+### Analyze Your Project
+
+Preview what strings will be extracted without making changes:
+
+```bash
+shard_i18n_migrator analyze lib/
+# or: dart run shard_i18n_migrator analyze lib/
+```
+
+Output shows:
+- Total translatable strings found
+- Breakdown by category (extractable, technical, ambiguous)
+- Confidence scores
+- Strings with interpolation and plurals
+
+**Options:**
+- `--verbose` - Show detailed analysis per file
+- `--config=path/to/config.yaml` - Use custom configuration
+
+### Migrate Your Project
+
+Transform your code to use shard_i18n:
+
+```bash
+# Dry run (preview changes without writing)
+shard_i18n_migrator migrate lib/ --dry-run
+
+# Interactive mode (asks for confirmation on ambiguous strings)
+shard_i18n_migrator migrate lib/
+
+# Automatic mode (extracts everything above confidence threshold)
+shard_i18n_migrator migrate lib/ --auto
+```
+
+**What it does:**
+1. **Analyzes** all Dart files in the specified directory
+2. **Extracts** translatable strings (UI text, error messages, etc.)
+3. **Transforms** code to use `context.t()` and `context.tn()` for plurals
+4. **Generates** JSON translation files in `assets/i18n/en/`
+5. **Adds** necessary imports (`package:shard_i18n/shard_i18n.dart`)
+6. **Preserves** interpolation parameters and plural forms
+
+**Migration options:**
+- `--dry-run` - Preview without modifying files
+- `--auto` - Skip interactive prompts for ambiguous strings
+- `--verbose` - Show detailed migration progress
+- `--config=path` - Use custom migration config
+- `--threshold=0.8` - Set confidence threshold (0.0-1.0)
+
+### Configuration
+
+Create a `shard_i18n_config.yaml` for fine-tuned migration:
+
+```yaml
+# Minimum confidence score to auto-extract (0.0 - 1.0)
+autoExtractThreshold: 0.7
+
+# Directories to exclude from analysis
+excludePaths:
+  - lib/generated/
+  - test/
+  - .dart_tool/
+
+# Patterns to skip (regex)
+skipPatterns:
+  - '^[A-Z_]+$'  # ALL_CAPS constants
+  - '^\d+$'      # Pure numbers
+
+# Feature-based sharding
+sharding:
+  enabled: true
+  defaultFeature: core
+  # Map directories to features
+  featureMapping:
+    lib/auth/: auth
+    lib/settings/: settings
+    lib/profile/: profile
+```
+
+### Migration Workflow
+
+**Recommended workflow for existing apps:**
+
+1. **Analyze first:**
+   ```bash
+   shard_i18n_migrator analyze lib/ --verbose
+   ```
+
+2. **Test on a single feature:**
+   ```bash
+   shard_i18n_migrator migrate lib/auth/ --dry-run
+   shard_i18n_migrator migrate lib/auth/
+   ```
+
+3. **Run tests:**
+   ```bash
+   flutter test
+   ```
+
+4. **Migrate remaining code:**
+   ```bash
+   shard_i18n_migrator migrate lib/ --auto
+   ```
+
+5. **Verify translations:**
+   ```bash
+   shard_i18n_cli verify
+   ```
+
+**Interactive mode** is recommended for the first migration - it prompts for confirmation on strings with low confidence scores, helping you avoid extracting technical strings or constants.
 
 ---
 
@@ -470,12 +617,41 @@ testWidgets('displays translated text', (tester) async {
 
 ## Migration Guide
 
-### From `flutter_gen`/`easy_localization`
+### Automated Migration (Recommended)
+
+Use the **shard_i18n_migrator** tool for automated migration from any existing i18n solution:
+
+```bash
+# 1. Analyze your codebase
+shard_i18n_migrator analyze lib/ --verbose
+
+# 2. Run migration (interactive mode)
+shard_i18n_migrator migrate lib/
+
+# 3. Review changes and test
+flutter test
+
+# 4. Verify translations
+shard_i18n_cli verify
+```
+
+The migrator automatically:
+- ✅ Extracts translatable strings from your code
+- ✅ Transforms to `context.t()` and `context.tn()` calls
+- ✅ Generates JSON translation files
+- ✅ Preserves interpolation and plural forms
+- ✅ Adds necessary imports
+
+See the [Migration Tool section](#2-migration-tool-shard_i18n_migrator) above for detailed usage.
+
+### Manual Migration
+
+If you prefer manual migration or have a unique setup:
 
 1. Export your current locale files to `assets/i18n/<locale>/core.json`
 2. Replace generated method calls with `context.t('msgid')`
 3. Keep `GlobalMaterialLocalizations` etc. if you use them
-4. Run `dart run shard_i18n_cli verify` to check consistency
+4. Run `shard_i18n_cli verify` to check consistency
 
 **Mixed mode** is fine: Keep legacy screens on old i18n while moving new features to `shard_i18n`.
 

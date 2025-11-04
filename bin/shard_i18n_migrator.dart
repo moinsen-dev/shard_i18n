@@ -4,7 +4,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:shard_i18n_migrator/shard_i18n_migrator.dart';
+import 'package:shard_i18n/shard_i18n_migrator.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
@@ -111,7 +111,8 @@ Future<void> _handleAnalyze(ArgResults command, bool verbose) async {
   print('Plural patterns detected: ${analysis.pluralCount}');
   print('');
   print(
-      'Average confidence score: ${analysis.averageConfidence.toStringAsFixed(1)}%');
+    'Average confidence score: ${analysis.averageConfidence.toStringAsFixed(1)}%',
+  );
   print('─' * 60);
   print('');
 
@@ -119,7 +120,8 @@ Future<void> _handleAnalyze(ArgResults command, bool verbose) async {
     print('Run "shard_i18n_migrator migrate $path" for interactive migration');
   } else {
     print(
-        'Run "shard_i18n_migrator migrate $path --auto" for automatic migration');
+      'Run "shard_i18n_migrator migrate $path --auto" for automatic migration',
+    );
   }
 }
 

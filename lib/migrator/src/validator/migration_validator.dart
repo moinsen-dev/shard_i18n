@@ -1,10 +1,17 @@
 import 'dart:io';
+import 'package:logger/logger.dart';
 
 /// Validates the migrated project
 class MigrationValidator {
   final bool verbose;
+  late final Logger _logger;
 
-  const MigrationValidator({required this.verbose});
+  MigrationValidator({required this.verbose}) {
+    _logger = Logger(
+      printer: SimplePrinter(colors: false),
+      level: verbose ? Level.debug : Level.info,
+    );
+  }
 
   /// Validate the migrated project
   Future<void> validate(String projectPath) async {
@@ -55,8 +62,6 @@ class MigrationValidator {
   }
 
   void _log(String message) {
-    if (verbose) {
-      print('[MigrationValidator] $message');
-    }
+    _logger.i(message);
   }
 }

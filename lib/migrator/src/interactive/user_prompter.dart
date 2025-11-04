@@ -1,4 +1,6 @@
-import 'package:interact/interact.dart' as interact;
+import 'dart:io';
+
+import 'terminal_select.dart';
 
 import '../config/migration_config.dart';
 import '../models/analysis_result.dart';
@@ -18,15 +20,15 @@ class UserPrompter {
     }
 
     // Show information about the string
-    print('');
-    print('Found: "${detectedString.value}"');
-    print('Context: ${detectedString.context}');
-    print('Confidence: ${detectedString.confidence}%');
-    print('Snippet: ${_truncate(detectedString.snippet, 60)}');
-    print('');
+    stdout.writeln('');
+    stdout.writeln('Found: "${detectedString.value}"');
+    stdout.writeln('Context: ${detectedString.context}');
+    stdout.writeln('Confidence: ${detectedString.confidence}%');
+    stdout.writeln('Snippet: ${_truncate(detectedString.snippet, 60)}');
+    stdout.writeln('');
 
     // Create prompt
-    final choice = interact.Select(
+    final choice = Select(
       prompt: 'Extract this string?',
       options: ['Yes', 'No', 'Skip all similar'],
     ).interact();

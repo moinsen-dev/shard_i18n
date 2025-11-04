@@ -1,3 +1,5 @@
+import 'package:logger/logger.dart';
+
 import '../config/migration_config.dart';
 import '../models/analysis_result.dart';
 import '../models/migration_result.dart';
@@ -32,6 +34,7 @@ class CodeTransformer {
   late final CodeRewriter _rewriter;
   late final ImportManager _importManager;
   late final UserPrompter? _prompter;
+  late final Logger _logger;
 
   CodeTransformer({
     required this.config,
@@ -41,6 +44,10 @@ class CodeTransformer {
     _rewriter = CodeRewriter(config: config, verbose: verbose);
     _importManager = ImportManager(verbose: verbose);
     _prompter = interactive ? UserPrompter(config: config) : null;
+    _logger = Logger(
+      printer: SimplePrinter(colors: false),
+      level: verbose ? Level.debug : Level.info,
+    );
   }
 
   /// Transform analyzed files to use shard_i18n
@@ -238,6 +245,6 @@ class CodeTransformer {
   }
 
   void _log(String message) {
-    if (verbose) print('[CodeTransformer] $message');
+    _logger.i(message);
   }
 }
