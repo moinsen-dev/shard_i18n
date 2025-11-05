@@ -10,9 +10,6 @@ topics:
   - localization
   - l10n
   - translation
-  - flutter
-  - runtime
-  - msgid
 
 environment:
   sdk: ^3.9.2
