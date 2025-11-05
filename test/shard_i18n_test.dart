@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shard_i18n/shard_i18n.dart';
-import 'package:flutter/widgets.dart';
 
 void main() {
   group('ShardI18n Core', () {
