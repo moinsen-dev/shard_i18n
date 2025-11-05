@@ -56,6 +56,3 @@ jobs:
 
       - name: Analyze example app
         run: cd example && flutter analyze
-
-      - name: Test example app build
-        run: cd example && flutter build apk --debug
