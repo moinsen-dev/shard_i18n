@@ -14,6 +14,7 @@ A tiny, production-ready i18n layer for Flutter that solves the pain points of t
 
 [![pub package](https://img.shields.io/pub/v/shard_i18n.svg)](https://pub.dev/packages/shard_i18n)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/moinsen-dev/shard_i18n/workflows/CI/badge.svg)](https://github.com/moinsen-dev/shard_i18n/actions)
 
 ---
 
@@ -685,6 +686,16 @@ Contributions welcome! Please:
 2. Add tests for new features
 3. Run `flutter test` before submitting PR
 4. Follow existing code style
+
+### For Maintainers
+
+This package uses automated publishing via GitHub Actions. See [PUBLISHING.md](PUBLISHING.md) for details on releasing new versions.
+
+**Quick release process:**
+1. Update version in `pubspec.yaml` and `CHANGELOG.md`
+2. Run `./scripts/pre_publish_check.sh` to verify readiness
+3. Create and push a version tag: `git tag -a v0.2.0 -m "Release 0.2.0" && git push origin v0.2.0`
+4. GitHub Actions will automatically publish to pub.dev
 
 ---
 

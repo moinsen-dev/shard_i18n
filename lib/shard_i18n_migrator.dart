@@ -1,5 +1,5 @@
 /// Automated migration tool for converting Flutter apps to use shard_i18n
-library shard_i18n_migrator;
+library;
 
 export 'migrator/src/migrator.dart';
 export 'migrator/src/models/analysis_result.dart';
