@@ -32,7 +32,7 @@ print_status "Code formatting"
 # 2. Run static analysis
 echo ""
 echo "🔍 Running static analysis..."
-flutter analyze
+flutter analyze --fatal-infos
 print_status "Static analysis"
 
 # 3. Run unit tests
@@ -49,7 +49,7 @@ flutter pub get > /dev/null 2>&1
 print_status "Example dependencies"
 
 # 5. Analyze example app
-flutter analyze
+flutter analyze --fatal-infos
 print_status "Example app analysis"
 
 # 6. Build example app

@@ -109,18 +109,27 @@ Once you push the tag:
 ### CI Workflow (`.github/workflows/ci.yml`)
 
 Runs on every push and pull request to `main`/`develop`:
-- ✅ Code formatting check
-- ✅ Static analysis
-- ✅ Unit tests
-- ✅ Example app build test
+- ✅ Code formatting check (`dart format`)
+- ✅ Static analysis with strict mode (`flutter analyze --fatal-infos`)
+- ✅ Unit tests with coverage (`flutter test --coverage`)
+- ✅ Example app analysis
 - ✅ Dry-run publish check
+
+**Optimizations:**
+- ⚡ Flutter SDK caching (30-50% faster runs)
+- ⚡ Pub dependency caching
+- 📌 Pinned Flutter version (3.24.5) for reproducibility
 
 ### Publish Workflow (`.github/workflows/publish.yml`)
 
 Runs when you push a version tag (e.g., `v0.1.0`):
-- ✅ All CI checks (formatting, analysis, tests)
-- ✅ Dry-run publish validation
-- ✅ Automatic publication to pub.dev via OIDC
+- ✅ Uses **official dart-lang reusable workflow**
+- ✅ Maintained by the Dart team
+- ✅ Automatic OIDC authentication
+- ✅ Built-in validation and checks
+- ✅ Handles edge cases and best practices
+
+**Note:** This workflow is much simpler and more reliable than custom implementations. The Dart team maintains it and ensures compatibility with pub.dev changes.
 
 ## Version Numbering
 
