@@ -35,10 +35,7 @@ void main() {
     });
 
     test('interpolation returns original text when params missing', () {
-      final result = ShardI18n.instance.translate(
-        'Hello, {name}!',
-        params: {},
-      );
+      final result = ShardI18n.instance.translate('Hello, {name}!', params: {});
       expect(result, equals('Hello, {name}!'));
     });
 
@@ -70,10 +67,7 @@ void main() {
 
     test('plural method works with fallback', () {
       // Without translations loaded, should return the key with count
-      final result = ShardI18n.instance.plural(
-        'items_count',
-        count: 5,
-      );
+      final result = ShardI18n.instance.plural('items_count', count: 5);
       expect(result, contains('items_count'));
     });
   });
@@ -86,10 +80,7 @@ void main() {
     test('supported locales contains at least English', () {
       final locales = ShardI18n.instance.supportedLocales;
       expect(locales, isNotEmpty);
-      expect(
-        locales.any((l) => l.languageCode == 'en'),
-        isTrue,
-      );
+      expect(locales.any((l) => l.languageCode == 'en'), isTrue);
     });
   });
 }

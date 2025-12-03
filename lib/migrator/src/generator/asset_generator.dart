@@ -26,10 +26,7 @@ class AssetGenerator {
   final bool verbose;
   late final Logger _logger;
 
-  AssetGenerator({
-    required this.config,
-    required this.verbose,
-  }) {
+  AssetGenerator({required this.config, required this.verbose}) {
     _logger = Logger(
       printer: SimplePrinter(colors: false),
       level: verbose ? Level.debug : Level.info,
@@ -49,8 +46,12 @@ class AssetGenerator {
     int jsonKeysGenerated = 0;
 
     // Create base directory
-    final i18nDir =
-        path.join(projectPath, 'assets', 'i18n', config.sourceLocale);
+    final i18nDir = path.join(
+      projectPath,
+      'assets',
+      'i18n',
+      config.sourceLocale,
+    );
 
     if (!dryRun) {
       await Directory(i18nDir).create(recursive: true);

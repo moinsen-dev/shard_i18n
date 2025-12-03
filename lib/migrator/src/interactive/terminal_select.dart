@@ -8,13 +8,12 @@ class Select {
   final List<String> options;
   final int initialIndex;
 
-  Select({
-    required this.prompt,
-    required this.options,
-    this.initialIndex = 0,
-  }) : assert(options.isNotEmpty, 'Options list cannot be empty'),
-       assert(initialIndex >= 0 && initialIndex < options.length,
-           'Initial index must be within options range');
+  Select({required this.prompt, required this.options, this.initialIndex = 0})
+    : assert(options.isNotEmpty, 'Options list cannot be empty'),
+      assert(
+        initialIndex >= 0 && initialIndex < options.length,
+        'Initial index must be within options range',
+      );
 
   /// Displays the selection menu and returns the index of the chosen option.
   int interact() {
@@ -158,7 +157,9 @@ class Select {
         return choice - 1;
       }
 
-      stdout.writeln('Invalid choice. Please enter a number between 1 and ${options.length}.');
+      stdout.writeln(
+        'Invalid choice. Please enter a number between 1 and ${options.length}.',
+      );
     }
   }
 }

@@ -15,10 +15,7 @@ class BootstrapGenerator {
   final List<String> createdFiles = [];
   final List<String> modifiedFiles = [];
 
-  BootstrapGenerator({
-    required this.config,
-    required this.verbose,
-  }) {
+  BootstrapGenerator({required this.config, required this.verbose}) {
     _logger = Logger(
       printer: SimplePrinter(colors: false),
       level: verbose ? Level.debug : Level.info,

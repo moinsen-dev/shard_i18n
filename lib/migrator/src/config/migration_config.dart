@@ -70,7 +70,8 @@ class MigrationConfig {
     buffer.writeln('# Shard I18n Migration Configuration');
     buffer.writeln();
     buffer.writeln(
-        '# Key generation strategy: msgid (natural language) or stable_id (semantic IDs)');
+      '# Key generation strategy: msgid (natural language) or stable_id (semantic IDs)',
+    );
     buffer.writeln('key_strategy: $keyStrategy');
     buffer.writeln();
 
@@ -102,8 +103,9 @@ class MigrationConfig {
     buffer.writeln();
 
     buffer.writeln('# Confidence threshold for automatic extraction (0-100)');
-    buffer
-        .writeln('# Strings below this threshold will prompt for user review');
+    buffer.writeln(
+      '# Strings below this threshold will prompt for user review',
+    );
     buffer.writeln('auto_extract_threshold: $autoExtractThreshold');
     buffer.writeln();
 

@@ -22,8 +22,10 @@ class ImportManager {
     required bool dryRun,
   }) async {
     final content = await File(filePath).readAsString();
-    final parseResult =
-        parseString(content: content, throwIfDiagnostics: false);
+    final parseResult = parseString(
+      content: content,
+      throwIfDiagnostics: false,
+    );
 
     // Check if import already exists
     final hasImport = parseResult.unit.directives
@@ -42,7 +44,8 @@ class ImportManager {
     const importStatement = "\nimport 'package:shard_i18n/shard_i18n.dart';";
 
     // Insert the import
-    final modifiedContent = content.substring(0, insertionPoint) +
+    final modifiedContent =
+        content.substring(0, insertionPoint) +
         importStatement +
         content.substring(insertionPoint);
 

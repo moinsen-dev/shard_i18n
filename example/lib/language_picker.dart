@@ -53,9 +53,9 @@ Future<void> showLanguagePicker(BuildContext context) async {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 context.t('Select Language'),
-                style: Theme.of(bottomSheetContext).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  bottomSheetContext,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             const Divider(height: 1),
@@ -67,7 +67,8 @@ Future<void> showLanguagePicker(BuildContext context) async {
                 itemBuilder: (listContext, index) {
                   final locale = supported[index];
                   final tag = _localeToTag(locale);
-                  final languageName = _languageNames[locale.languageCode] ?? tag;
+                  final languageName =
+                      _languageNames[locale.languageCode] ?? tag;
                   final isSelected = current == locale;
 
                   return ListTile(
@@ -80,7 +81,9 @@ Future<void> showLanguagePicker(BuildContext context) async {
                     title: Text(
                       languageName,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                     subtitle: Text(

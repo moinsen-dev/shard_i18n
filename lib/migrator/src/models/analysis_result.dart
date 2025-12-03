@@ -63,10 +63,7 @@ class FileAnalysis {
   /// Strings found in this file
   final List<DetectedString> strings;
 
-  const FileAnalysis({
-    required this.filePath,
-    required this.strings,
-  });
+  const FileAnalysis({required this.filePath, required this.strings});
 }
 
 /// A detected string literal with metadata

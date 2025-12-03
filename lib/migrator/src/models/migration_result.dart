@@ -75,11 +75,7 @@ class MigrationWarning {
   /// Line number where warning occurred
   final int? line;
 
-  const MigrationWarning({
-    required this.message,
-    this.filePath,
-    this.line,
-  });
+  const MigrationWarning({required this.message, this.filePath, this.line});
 
   @override
   String toString() {

@@ -14,7 +14,7 @@ class TransformResult {
   final int importsAdded;
   final List<MigrationWarning> warnings;
   final Map<String, Map<String, dynamic>>
-      extractedStrings; // feature -> key -> value (String or Map for plurals)
+  extractedStrings; // feature -> key -> value (String or Map for plurals)
 
   const TransformResult({
     required this.modifiedFiles,
@@ -197,11 +197,15 @@ class CodeTransformer {
 
     final cleaned = cleanValue
         .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9_]'),
-            '_') // Convert all non-alphanumeric to underscore
+        .replaceAll(
+          RegExp(r'[^a-z0-9_]'),
+          '_',
+        ) // Convert all non-alphanumeric to underscore
         .replaceAll(RegExp(r'_+'), '_') // Replace multiple underscores with one
         .replaceAll(
-            RegExp(r'^_|_$'), ''); // Remove leading/trailing underscores
+          RegExp(r'^_|_$'),
+          '',
+        ); // Remove leading/trailing underscores
 
     return '${cleaned}_count';
   }
@@ -209,8 +213,9 @@ class CodeTransformer {
   Map<String, String> _extractPluralForms(String value, String pluralKey) {
     // Extract the base word from the plural key
     // e.g., "count_item_count" -> "item"
-    String baseWord =
-        pluralKey.replaceAll('_count', '').replaceAll('count_', '');
+    String baseWord = pluralKey
+        .replaceAll('_count', '')
+        .replaceAll('count_', '');
 
     // If the base word is empty or just underscores, use a fallback
     if (baseWord.isEmpty || baseWord.replaceAll('_', '').isEmpty) {
@@ -222,10 +227,7 @@ class CodeTransformer {
     final singular = '{count} $baseWord';
     final plural = '{count} ${baseWord}s';
 
-    return {
-      'one': singular,
-      'other': plural,
-    };
+    return {'one': singular, 'other': plural};
   }
 
   String _generateStableId(String value) {

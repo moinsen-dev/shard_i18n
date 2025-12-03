@@ -30,11 +30,9 @@ class MigrationValidator {
     _log('Running flutter analyze...');
 
     try {
-      final result = await Process.run(
-        'flutter',
-        ['analyze'],
-        workingDirectory: projectPath,
-      );
+      final result = await Process.run('flutter', [
+        'analyze',
+      ], workingDirectory: projectPath);
 
       if (result.exitCode != 0) {
         _log('Warning: flutter analyze found issues:');

@@ -56,8 +56,10 @@ class ShardI18nMigrator {
     try {
       // Step 1: Analyze the project
       _log('Step 1: Analyzing project...');
-      final dartFiles =
-          await _findDartFiles(projectPath, config.excludePatterns);
+      final dartFiles = await _findDartFiles(
+        projectPath,
+        config.excludePatterns,
+      );
       final analyzer = ProjectAnalyzer(verbose: verbose);
       final analysis = await analyzer.analyze(dartFiles);
 
@@ -75,10 +77,7 @@ class ShardI18nMigrator {
 
       // Step 3: Generate assets
       _log('Step 3: Generating translation assets...');
-      final assetGenerator = AssetGenerator(
-        config: config,
-        verbose: verbose,
-      );
+      final assetGenerator = AssetGenerator(config: config, verbose: verbose);
       final assetResult = await assetGenerator.generate(
         transformResult,
         projectPath: projectPath,
@@ -119,10 +118,7 @@ class ShardI18nMigrator {
       );
     } catch (e, stack) {
       return MigrationResult.failed([
-        MigrationError(
-          message: e.toString(),
-          stackTrace: stack,
-        ),
+        MigrationError(message: e.toString(), stackTrace: stack),
       ]);
     }
   }

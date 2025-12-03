@@ -98,9 +98,9 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 ShardI18n.instance.locale.languageCode.toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -143,9 +143,9 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       context.tn('items_count', count: _itemCount),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     // Action buttons
@@ -179,14 +179,26 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     context.t('Features'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  _FeatureItem(icon: Icons.code, text: context.t('No code generation')),
-                  _FeatureItem(icon: Icons.folder, text: context.t('Sharded translations')),
-                  _FeatureItem(icon: Icons.language, text: context.t('Dynamic locale switching')),
-                  _FeatureItem(icon: Icons.text_fields, text: context.t('Msgid-based lookups')),
+                  _FeatureItem(
+                    icon: Icons.code,
+                    text: context.t('No code generation'),
+                  ),
+                  _FeatureItem(
+                    icon: Icons.folder,
+                    text: context.t('Sharded translations'),
+                  ),
+                  _FeatureItem(
+                    icon: Icons.language,
+                    text: context.t('Dynamic locale switching'),
+                  ),
+                  _FeatureItem(
+                    icon: Icons.text_fields,
+                    text: context.t('Msgid-based lookups'),
+                  ),
                   const SizedBox(height: 16),
                   // Learn More button
                   Center(
@@ -225,10 +237,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _FeatureItem extends StatelessWidget {
-  const _FeatureItem({
-    required this.icon,
-    required this.text,
-  });
+  const _FeatureItem({required this.icon, required this.text});
 
   final IconData icon;
   final String text;
@@ -239,17 +248,10 @@ class _FeatureItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+          Icon(icon, size: 20, color: Theme.of(context).colorScheme.secondary),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),

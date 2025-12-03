@@ -5,6 +5,22 @@ All notable changes to shard_i18n will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-12-03
+
+### Changed
+- **Dependencies updated** for pub.dev compatibility:
+  - `analyzer: ^8.4.1` → `^9.0.0` (latest stable)
+  - `http: ^1.5.0` → `^1.6.0`
+  - `mockito: ^5.5.1` → `^5.6.1`
+  - `build_runner: ^2.10.1` → `^2.10.4`
+  - `json_serializable: ^6.11.1` → `^6.11.3`
+
+### Fixed
+- **Code formatting** - Applied `dart format` to all Dart files to match Dart style guidelines
+- **pub.dev score** - Resolved static analysis warnings and dependency compatibility issues
+
+---
+
 ## [0.1.0] - 2025-01-04
 
 ### Added
@@ -129,4 +145,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.2.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.0
 [0.1.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.1.0

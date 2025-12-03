@@ -72,7 +72,8 @@ class ShardI18n extends ChangeNotifier {
   /// Get list of supported locales discovered from assets.
   ///
   /// This is lazy-loaded from AssetManifest.json after bootstrap.
-  List<Locale> get supportedLocales => _supportedLocales ?? const [Locale('en')];
+  List<Locale> get supportedLocales =>
+      _supportedLocales ?? const [Locale('en')];
 
   /// Check if the instance has been bootstrapped
   bool get isBootstrapped => _bootstrapped;
@@ -292,11 +293,7 @@ class ShardI18n extends ChangeNotifier {
   ///
   /// Later entries in the merge chain override earlier ones (last-write-wins).
   Future<void> _loadLocale(Locale locale) async {
-    final tags = <String>{
-      _localeTag(locale),
-      locale.languageCode,
-      'en',
-    };
+    final tags = <String>{_localeTag(locale), locale.languageCode, 'en'};
 
     final merged = <String, dynamic>{};
 
@@ -369,11 +366,7 @@ class ShardI18n extends ChangeNotifier {
       _cache[tag] = merged;
       return merged;
     } catch (e) {
-      developer.log(
-        'Error loading tag: $tag',
-        name: 'shard_i18n',
-        error: e,
-      );
+      developer.log('Error loading tag: $tag', name: 'shard_i18n', error: e);
       // Return empty map on error
       return {};
     }
@@ -399,9 +392,10 @@ class ShardI18n extends ChangeNotifier {
         }
       }
 
-      _supportedLocales = locales.toList()..sort((a, b) {
-        return a.languageCode.compareTo(b.languageCode);
-      });
+      _supportedLocales = locales.toList()
+        ..sort((a, b) {
+          return a.languageCode.compareTo(b.languageCode);
+        });
 
       if (_supportedLocales!.isEmpty) {
         // Fallback to English if no assets found
@@ -585,7 +579,11 @@ extension ShardI18nX on BuildContext {
   /// ```dart
   /// Text(context.tn('items_count', count: items.length))
   /// ```
-  String tn(String key, {required num count, Map<String, Object?> params = const {}}) {
+  String tn(
+    String key, {
+    required num count,
+    Map<String, Object?> params = const {},
+  }) {
     return ShardI18n.instance.plural(key, count: count, params: params);
   }
 }

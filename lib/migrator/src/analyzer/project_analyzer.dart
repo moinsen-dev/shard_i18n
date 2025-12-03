@@ -34,8 +34,10 @@ class ProjectAnalyzer {
 
       try {
         final content = await File(filePath).readAsString();
-        final parseResult =
-            parseString(content: content, throwIfDiagnostics: false);
+        final parseResult = parseString(
+          content: content,
+          throwIfDiagnostics: false,
+        );
 
         final visitor = StringDetectorVisitor(filePath);
         parseResult.unit.accept(visitor);
@@ -88,8 +90,9 @@ class ProjectAnalyzer {
       ambiguousStrings: ambiguousStrings,
       interpolationCount: interpolationCount,
       pluralCount: pluralCount,
-      averageConfidence:
-          totalStrings > 0 ? totalConfidence / totalStrings : 0.0,
+      averageConfidence: totalStrings > 0
+          ? totalConfidence / totalStrings
+          : 0.0,
       filesAnalyzed: filePaths,
       fileBreakdown: fileBreakdown,
     );
@@ -135,17 +138,19 @@ class StringDetectorVisitor extends RecursiveAstVisitor<void> {
     final isPlural = _isPluralPattern(node);
     final snippet = _getSnippet(node);
 
-    detectedStrings.add(DetectedString(
-      value: value,
-      line: node.offset, // Simplified; should get line from parse result
-      column: node.offset,
-      confidence: confidence,
-      category: category,
-      context: context,
-      hasInterpolation: hasInterpolation,
-      isPlural: isPlural,
-      snippet: snippet,
-    ));
+    detectedStrings.add(
+      DetectedString(
+        value: value,
+        line: node.offset, // Simplified; should get line from parse result
+        column: node.offset,
+        confidence: confidence,
+        category: category,
+        context: context,
+        hasInterpolation: hasInterpolation,
+        isPlural: isPlural,
+        snippet: snippet,
+      ),
+    );
   }
 
   /// Extract the actual string value

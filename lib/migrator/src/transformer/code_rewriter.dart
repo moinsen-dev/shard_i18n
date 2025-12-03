@@ -27,10 +27,7 @@ class CodeRewriter {
   final bool verbose;
   late final Logger _logger;
 
-  CodeRewriter({
-    required this.config,
-    this.verbose = false,
-  }) {
+  CodeRewriter({required this.config, this.verbose = false}) {
     _logger = Logger(
       printer: SimplePrinter(colors: false),
       level: verbose ? Level.debug : Level.info,
@@ -53,8 +50,10 @@ class CodeRewriter {
     final content = await File(filePath).readAsString();
 
     // Parse the file
-    final parseResult =
-        parseString(content: content, throwIfDiagnostics: false);
+    final parseResult = parseString(
+      content: content,
+      throwIfDiagnostics: false,
+    );
 
     // Build the rewriter visitor
     final rewriter = _StringRewriterVisitor(
@@ -139,11 +138,13 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
     }
 
     // Add the edit
-    edits.add(CodeEdit(
-      offset: node.offset,
-      length: node.length,
-      replacement: replacement,
-    ));
+    edits.add(
+      CodeEdit(
+        offset: node.offset,
+        length: node.length,
+        replacement: replacement,
+      ),
+    );
   }
 
   DetectedString? _findMatchingString(StringLiteral node) {
@@ -195,7 +196,9 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
   }
 
   String _generateSimpleReplacement(
-      StringLiteral node, DetectedString detected) {
+    StringLiteral node,
+    DetectedString detected,
+  ) {
     // Generate key
     final key = _generateKey(detected.value);
 
@@ -231,14 +234,17 @@ class _StringRewriterVisitor extends RecursiveAstVisitor<void> {
       return "context.t('$key')";
     }
 
-    final paramsStr =
-        params.entries.map((e) => "'${e.key}': ${e.value}").join(', ');
+    final paramsStr = params.entries
+        .map((e) => "'${e.key}': ${e.value}")
+        .join(', ');
 
     return "context.t('$key', params: {$paramsStr})";
   }
 
   String? _generatePluralReplacement(
-      StringLiteral node, DetectedString detected) {
+    StringLiteral node,
+    DetectedString detected,
+  ) {
     // For plural patterns, we need to analyze the string interpolation
     // Pattern: '$count item${count == 1 ? '' : 's'}'
     // We need to extract: count variable, singular suffix, plural suffix
