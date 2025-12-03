@@ -5,6 +5,17 @@ All notable changes to shard_i18n will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2025-12-03
+
+### Added
+- **String extensions** - New `ShardI18nStringX` extension for translating strings without BuildContext:
+  - `.tx` getter for simple translations: `'Hello World'.tx`
+  - `.t()` method with parameters: `'Hello, {name}!'.t({'name': 'World'})`
+  - `.tn()` method for plurals: `'items_count'.tn(count: 5)`
+  - Useful when context is not available or for more concise code
+
+---
+
 ## [0.2.1] - 2025-12-03
 
 ### Fixed
@@ -156,6 +167,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.2.2]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.2
 [0.2.1]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.1
 [0.2.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.0
 [0.1.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.1.0

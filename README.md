@@ -3,7 +3,7 @@
 **Runtime, sharded, msgid-based internationalization for Flutter - no code generation required.**
 
 A tiny, production-ready i18n layer for Flutter that solves the pain points of traditional approaches:
-- ✅ **No codegen** - Pure runtime lookups with `context.t('Sign in')`
+- ✅ **No codegen** - Pure runtime lookups with `context.t('Sign in')` or `'Sign in'.tx`
 - ✅ **Sharded by feature** - `assets/i18n/<locale>/<feature>.json` prevents merge conflicts
 - ✅ **Msgid ergonomics** - Use readable English directly in code; auto-fallback if missing
 - ✅ **BLoC-ready** - Tiny `LanguageCubit` drives `Locale`; UI pulls strings via context
@@ -43,7 +43,7 @@ Large teams fight over one giant ARB/JSON file and slow codegen cycles. `shard_i
 dependencies:
   flutter:
     sdk: flutter
-  shard_i18n: ^0.1.0
+  shard_i18n: ^0.2.2
   flutter_bloc: ^8.1.4        # for state management (optional but recommended)
   shared_preferences: ^2.2.3   # for persisting language choice (optional)
 
@@ -190,6 +190,29 @@ context.t('Hello, {name}!', params: {'name': 'Alice'})
 // Plural forms (automatically selects one/few/many/other based on locale)
 context.tn('items_count', count: 5)
 ```
+
+### String Extensions
+
+For even more concise code, use string extensions (no `context` required):
+
+```dart
+// Simple translation (getter)
+Text('Hello World'.tx)
+
+// Translation with parameters
+Text('Hello, {name}!'.t({'name': 'Alice'}))
+
+// Plural forms
+Text('items_count'.tn(count: 5))
+```
+
+| Method | Description | Example |
+|--------|-------------|---------|
+| `.tx` | Simple translation (getter) | `'Sign in'.tx` |
+| `.t()` | Translation with optional params | `'Hello, {name}!'.t({'name': 'World'})` |
+| `.tn()` | Pluralization with count | `'items_count'.tn(count: 5)` |
+
+> **Note:** String extensions use `ShardI18n.instance` directly, so they work anywhere - in widgets, controllers, or utility classes.
 
 ### ShardI18n Singleton
 

@@ -35,6 +35,11 @@ typedef PluralCategory = String Function(num n);
 /// // Access via context extensions
 /// Text(context.t('Hello, {name}!', params: {'name': 'World'}))
 /// Text(context.tn('items_count', count: 5))
+///
+/// // Or via string extensions (no context needed)
+/// Text('Hello World'.tx)
+/// Text('Hello, {name}!'.t({'name': 'World'}))
+/// Text('items_count'.tn(count: 5))
 /// ```
 class ShardI18n extends ChangeNotifier {
   ShardI18n._();
@@ -603,5 +608,56 @@ extension ShardI18nX on BuildContext {
     Map<String, Object?> params = const {},
   }) {
     return ShardI18n.instance.plural(key, count: count, params: params);
+  }
+}
+
+// ==================== STRING EXTENSIONS ====================
+
+/// String extensions for convenient i18n access without BuildContext.
+///
+/// Provides shorthand methods to translate strings directly,
+/// useful when context is not available or for more concise code.
+///
+/// Example:
+/// ```dart
+/// // Simple translation (getter)
+/// Text('Hello World'.tx)
+///
+/// // Translation with parameters
+/// Text('Hello, {name}!'.t({'name': 'World'}))
+///
+/// // Pluralization
+/// Text('items_count'.tn(count: 5))
+/// ```
+extension ShardI18nStringX on String {
+  /// Translate this string key (no parameters).
+  ///
+  /// Example:
+  /// ```dart
+  /// Text('Hello World'.tx)
+  /// ```
+  String get tx => ShardI18n.instance.translate(this);
+
+  /// Translate this string key with optional interpolation parameters.
+  ///
+  /// Example:
+  /// ```dart
+  /// Text('Hello, {name}!'.t({'name': 'World'}))
+  /// ```
+  String t([Map<String, Object?> params = const {}]) {
+    return ShardI18n.instance.translate(this, params: params);
+  }
+
+  /// Pluralize this string key based on count.
+  ///
+  /// Example:
+  /// ```dart
+  /// Text('items_count'.tn(count: items.length))
+  /// ```
+  String tn({
+    required num count,
+    Map<String, Object?> params = const {},
+  }) {
+    return ShardI18n.instance.plural(this, count: count, params: params);
   }
 }
