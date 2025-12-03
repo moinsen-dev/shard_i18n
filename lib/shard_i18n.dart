@@ -10,7 +10,7 @@ library;
 
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:flutter/widgets.dart';
 
 /// Type definition for plural category resolver functions.
@@ -65,6 +65,9 @@ class ShardI18n extends ChangeNotifier {
 
   /// Set to track already-logged missing keys (prevent spam)
   final Set<String> _loggedMissingKeys = {};
+
+  /// Cached asset manifest instance
+  AssetManifest? _assetManifest;
 
   /// Get the current effective locale
   Locale get locale => _locale;
@@ -317,26 +320,40 @@ class ShardI18n extends ChangeNotifier {
 
   /// Load all JSON files for a specific locale tag.
   ///
-  /// Scans AssetManifest.json for files matching:
+  /// Scans asset manifest for files matching:
   /// `assets/i18n/<tag>/*.json`
   ///
   /// Results are cached to avoid repeated asset loading.
   Future<Map<String, dynamic>> _loadTag(String tag) async {
     // Check cache first
     if (_cache.containsKey(tag)) {
+      developer.log(
+        'Using cached translations for: $tag (${_cache[tag]!.length} keys)',
+        name: 'shard_i18n',
+      );
       return _cache[tag]!;
     }
 
     try {
-      // Load asset manifest
-      final manifestRaw = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestFiles = json.decode(manifestRaw);
+      // Load and cache asset manifest using the new AssetManifest API (Flutter 3.x+)
+      _assetManifest ??= await AssetManifest.loadFromAssetBundle(rootBundle);
+      final allAssets = _assetManifest!.listAssets();
+
+      developer.log(
+        'Asset manifest has ${allAssets.length} assets',
+        name: 'shard_i18n',
+      );
 
       // Find all JSON files for this locale tag
       final prefix = 'assets/i18n/$tag/';
-      final paths = manifestFiles.keys
+      final paths = allAssets
           .where((p) => p.startsWith(prefix) && p.endsWith('.json'))
           .toList();
+
+      developer.log(
+        'Found ${paths.length} translation files for tag "$tag": $paths',
+        name: 'shard_i18n',
+      );
 
       if (paths.isEmpty) {
         developer.log(
@@ -372,19 +389,20 @@ class ShardI18n extends ChangeNotifier {
     }
   }
 
-  /// Discover supported locales from AssetManifest.json.
+  /// Discover supported locales from asset manifest.
   ///
   /// Parses manifest to find all unique locale folders under assets/i18n/
   Future<void> _discoverSupportedLocales() async {
     try {
-      final manifestRaw = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestFiles = json.decode(manifestRaw);
+      // Load and cache asset manifest using the new AssetManifest API (Flutter 3.x+)
+      _assetManifest ??= await AssetManifest.loadFromAssetBundle(rootBundle);
+      final allAssets = _assetManifest!.listAssets();
 
       // Extract unique locale tags from paths like: assets/i18n/<locale>/*.json
       final locales = <Locale>{};
       final pattern = RegExp(r'assets/i18n/([a-z]{2}(?:-[A-Z]{2})?)/');
 
-      for (final path in manifestFiles.keys) {
+      for (final path in allAssets) {
         final match = pattern.firstMatch(path);
         if (match != null) {
           final tag = match.group(1)!;
