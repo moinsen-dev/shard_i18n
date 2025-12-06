@@ -14,7 +14,7 @@ shard_i18n is a production-ready i18n library for Flutter that provides:
 
 ```yaml
 dependencies:
-  shard_i18n: ^0.1.0
+  shard_i18n: ^0.2.2
 
 flutter:
   assets:
@@ -70,6 +70,11 @@ Text(context.t('Hello, {name}!', params: {'name': 'World'}))
 
 // Plural forms
 Text(context.tn('items_count', count: 5))
+
+// String extensions (v0.2.2+) - no context needed
+Text('Sign in'.tx)
+Text('Hello, {name}!'.t({'name': 'World'}))
+Text('items_count'.tn(count: 5))
 ```
 
 ## Translation File Structure
@@ -156,6 +161,21 @@ context.t(String key, {Map<String, Object?> params = const {}})
 
 // Pluralize with count
 context.tn(String key, {required num count, Map<String, Object?> params = const {}})
+```
+
+### String Extensions (v0.2.2+)
+
+For context-free translations when BuildContext is not available:
+
+```dart
+// Simple translation
+'Hello World'.tx
+
+// With interpolation
+'Hello, {name}!'.t({'name': 'World'})
+
+// Plural forms
+'items_count'.tn(count: 5)
 ```
 
 ## Features
