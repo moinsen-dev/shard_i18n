@@ -2,6 +2,8 @@
 
 > Runtime, sharded, msgid-based internationalization for Flutter - no code generation required
 
+**Version:** 0.3.0 | **Documentation:** https://moinsen-dev.github.io/shard_i18n/
+
 shard_i18n is a production-ready i18n library for Flutter that provides:
 - Direct msgid usage in code (`context.t('Sign in')`)
 - Sharded JSON files per locale to prevent merge conflicts
@@ -14,7 +16,7 @@ shard_i18n is a production-ready i18n library for Flutter that provides:
 
 ```yaml
 dependencies:
-  shard_i18n: ^0.2.2
+  shard_i18n: ^0.3.0
 
 flutter:
   assets:
@@ -415,10 +417,77 @@ showDialog(
 );
 ```
 
+## CLI: extract Command (v0.3.0+)
+
+Scan source code for i18n usage and compare with JSON files:
+
+```bash
+# Basic usage - find discrepancies
+dart run shard_i18n_cli extract
+
+# JSON output for CI/CD pipelines
+dart run shard_i18n_cli extract --format=json --strict
+
+# Auto-fix missing keys (generates JSON entries)
+dart run shard_i18n_cli extract --fix
+
+# Remove orphaned keys from JSON
+dart run shard_i18n_cli extract --prune
+
+# Preview changes without writing
+dart run shard_i18n_cli extract --fix --dry-run
+```
+
+**Detection Patterns:**
+- `context.t('key')` / `context.t('key', params: {...})`
+- `context.tn('key', count: n)`
+- `'key'.tx` (getter)
+- `'key'.t({...})` / `'key'.tn(count: n)`
+
+**Output Formats:**
+- `text` - Human-readable with statistics (default)
+- `json` - Machine-readable for CI integration
+- `diff` - Git-style `+`/`-` format
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--path` | Source directory (default: lib/) |
+| `--i18n` | i18n assets path (default: assets/i18n) |
+| `--format` | Output format: text, json, diff |
+| `--locale` | Reference locale (default: en) |
+| `--fix` | Auto-generate missing entries |
+| `--prune` | Remove orphaned keys |
+| `--strict` | Exit code 1 on discrepancies |
+| `--dry-run` | Preview without writing |
+| `--verbose` | Show per-file breakdown |
+
+## CLI: verify Command
+
+Check translation consistency across locales:
+
+```bash
+dart run shard_i18n_cli verify
+```
+
+## CLI: fill Command
+
+Auto-translate missing keys using AI providers:
+
+```bash
+# Using OpenAI
+dart run shard_i18n_cli fill --from=en --to=de --provider=openai --key=$OPENAI_API_KEY
+
+# Using DeepL
+dart run shard_i18n_cli fill --from=en --to=de,fr,es --provider=deepl --key=$DEEPL_API_KEY
+```
+
 ## Package Info
 
 - **Package**: shard_i18n
+- **Version**: 0.3.0
 - **Repository**: https://github.com/moinsen-dev/shard_i18n
+- **Documentation**: https://moinsen-dev.github.io/shard_i18n/
 - **License**: MIT
 - **Platform**: Flutter (iOS, Android, Web, Desktop)
 - **Minimum SDK**: Dart ^3.9.2, Flutter >=1.17.0

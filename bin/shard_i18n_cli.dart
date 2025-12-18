@@ -8,7 +8,9 @@ import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
-const String version = '0.1.0';
+import 'package:shard_i18n/cli/src/extract/extract.dart';
+
+const String version = '0.3.0';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
@@ -59,6 +61,61 @@ void main(List<String> arguments) async {
           negatable: false,
           help: 'Show what would be translated without writing files',
         ),
+    )
+    ..addCommand(
+      'extract',
+      ArgParser()
+        ..addOption(
+          'path',
+          abbr: 'p',
+          defaultsTo: 'lib/',
+          help: 'Source directory to scan for i18n usage',
+        )
+        ..addOption(
+          'i18n',
+          abbr: 'i',
+          defaultsTo: 'assets/i18n',
+          help: 'Path to i18n assets directory',
+        )
+        ..addOption(
+          'format',
+          abbr: 'f',
+          allowed: ['text', 'json', 'diff'],
+          defaultsTo: 'text',
+          help: 'Output format (text, json, diff)',
+        )
+        ..addOption(
+          'locale',
+          abbr: 'l',
+          defaultsTo: 'en',
+          help: 'Reference locale for comparison',
+        )
+        ..addFlag(
+          'fix',
+          negatable: false,
+          help: 'Auto-generate missing entries in reference locale JSON',
+        )
+        ..addFlag(
+          'prune',
+          negatable: false,
+          help: 'Remove orphaned keys from JSON (not found in code)',
+        )
+        ..addFlag(
+          'dry-run',
+          negatable: false,
+          help: 'Preview changes without writing files (use with --fix/--prune)',
+        )
+        ..addFlag(
+          'strict',
+          negatable: false,
+          help: 'Exit with code 1 on any discrepancy (for CI/CD)',
+        )
+        ..addFlag(
+          'verbose',
+          abbr: 'v',
+          negatable: false,
+          help: 'Show detailed per-file breakdown',
+        ),
     );
 
   try {
@@ -89,6 +146,9 @@ void main(List<String> arguments) async {
       case 'fill':
         await runFill(command);
         break;
+      case 'extract':
+        final exitCode = await runExtract(command);
+        exit(exitCode);
       default:
         print('Error: Unknown command "${command.name}"');
         exit(1);
@@ -106,8 +166,9 @@ shard_i18n CLI - Translation management tool
 Usage: dart run shard_i18n_cli <command> [arguments]
 
 Commands:
-  verify    Verify translation consistency
+  verify    Verify translation consistency across locales
   fill      Fill missing translations using AI providers
+  extract   Extract i18n keys from code and compare with JSON files
 
 Global options:
 ${parser.usage}
@@ -121,6 +182,18 @@ Examples:
 
   # Fill multiple locales
   dart run shard_i18n_cli fill --from=en --to=de,tr,fr --provider=openai --key=\$OPENAI_API_KEY
+
+  # Extract keys from code and compare with JSON
+  dart run shard_i18n_cli extract
+
+  # Extract with JSON output for CI
+  dart run shard_i18n_cli extract --format=json --strict
+
+  # Auto-fix missing keys
+  dart run shard_i18n_cli extract --fix
+
+  # Preview auto-fix and prune changes
+  dart run shard_i18n_cli extract --fix --prune --dry-run
 
 For more information, visit: https://github.com/moinsen-dev/shard_i18n
 ''');
@@ -563,4 +636,123 @@ Future<void> writeTranslations(
   // Write back with pretty formatting
   final encoder = const JsonEncoder.withIndent('  ');
   await targetFile.writeAsString(encoder.convert(existing));
+}
+
+/// Extract command: Scan code for i18n keys and compare with JSON
+Future<int> runExtract(ArgResults command) async {
+  final sourcePath = command['path'] as String;
+  final i18nPath = command['i18n'] as String;
+  final formatStr = command['format'] as String;
+  final locale = command['locale'] as String;
+  final fix = command['fix'] as bool;
+  final prune = command['prune'] as bool;
+  final dryRun = command['dry-run'] as bool;
+  final strict = command['strict'] as bool;
+  final verbose = command['verbose'] as bool;
+
+  // Validate source path
+  final sourceDir = Directory(sourcePath);
+  if (!sourceDir.existsSync()) {
+    print('Error: Source directory "$sourcePath" does not exist');
+    return 1;
+  }
+
+  // Validate i18n path
+  final i18nDir = Directory(i18nPath);
+  if (!i18nDir.existsSync()) {
+    print('Error: i18n directory "$i18nPath" does not exist');
+    return 1;
+  }
+
+  // Parse output format
+  final format = switch (formatStr) {
+    'json' => OutputFormat.json,
+    'diff' => OutputFormat.diff,
+    _ => OutputFormat.text,
+  };
+
+  // Only show header for text format
+  if (format == OutputFormat.text) {
+    print('Scanning source files in: $sourcePath');
+    print('Comparing with JSON in: $i18nPath/$locale/\n');
+  }
+
+  // Find all Dart files
+  final dartFiles = await findDartFiles(sourcePath, exclude: [
+    'generated',
+    '.g.dart',
+    '.freezed.dart',
+  ]);
+
+  if (dartFiles.isEmpty) {
+    print('No Dart files found in $sourcePath');
+    return 0;
+  }
+
+  // Extract keys from source code
+  final extractor = I18nKeyExtractor(
+    verbose: verbose,
+    onLog: verbose ? print : null,
+  );
+  final extracted = await extractor.extract(dartFiles);
+
+  // Compare with JSON
+  final comparator = JsonComparator(
+    i18nPath: i18nPath,
+    referenceLocale: locale,
+    onLog: verbose ? print : null,
+  );
+
+  ComparisonResult comparison;
+  try {
+    comparison = await comparator.compare(extracted);
+  } catch (e) {
+    print('Error comparing with JSON: $e');
+    return 1;
+  }
+
+  // Report results
+  final reporter = ExtractReporter.forFormat(format);
+  reporter.report(comparison, extracted, verbose: verbose);
+
+  // Handle fix and prune
+  if (fix || prune) {
+    final fixer = AutoFixer(
+      i18nPath: i18nPath,
+      referenceLocale: locale,
+      dryRun: dryRun,
+      onLog: print,
+    );
+
+    final result = await fixer.fixAndPrune(
+      comparison,
+      extracted,
+      fix: fix,
+      prune: prune,
+    );
+
+    if (result.hasChanges) {
+      print('');
+      if (dryRun) {
+        print('[DRY RUN] Would modify ${result.filesModified.length} file(s):');
+        print('  Keys to add: ${result.keysAdded}');
+        print('  Keys to remove: ${result.keysRemoved}');
+      } else {
+        print('Modified ${result.filesModified.length} file(s):');
+        print('  Keys added: ${result.keysAdded}');
+        print('  Keys removed: ${result.keysRemoved}');
+      }
+    }
+
+    for (final warning in result.warnings) {
+      print('Warning: $warning');
+    }
+  }
+
+  // Return exit code based on strict mode
+  if (strict && comparison.hasDiscrepancies) {
+    return 1;
+  }
+
+  return 0;
 }
