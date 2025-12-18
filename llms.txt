@@ -2,7 +2,7 @@
 
 > Runtime, sharded, msgid-based internationalization for Flutter - no code generation required
 
-**Version:** 0.3.0 | **Documentation:** https://moinsen-dev.github.io/shard_i18n/
+**Version:** 0.3.1 | **Documentation:** https://moinsen-dev.github.io/shard_i18n/
 
 shard_i18n is a production-ready i18n library for Flutter that provides:
 - Direct msgid usage in code (`context.t('Sign in')`)
@@ -16,7 +16,7 @@ shard_i18n is a production-ready i18n library for Flutter that provides:
 
 ```yaml
 dependencies:
-  shard_i18n: ^0.3.0
+  shard_i18n: ^0.3.1
 
 flutter:
   assets:

@@ -77,7 +77,8 @@ class TextReporter implements ExtractReporter {
     buffer.writeln('  Keys in code:      ${stats.totalKeysInCode}');
     buffer.writeln('  Keys in JSON:      ${stats.totalKeysInJson}');
     buffer.writeln(
-        '  Matched:           ${stats.matchedCount} (${stats.coveragePercent.toStringAsFixed(1)}%)');
+      '  Matched:           ${stats.matchedCount} (${stats.coveragePercent.toStringAsFixed(1)}%)',
+    );
     buffer.writeln('  Missing in JSON:   ${stats.missingCount}');
     buffer.writeln('  Orphaned in JSON:  ${stats.orphanedCount}');
     buffer.writeln();
@@ -159,8 +160,8 @@ class TextReporter implements ExtractReporter {
           final status = result.missingInJson.contains(key.key)
               ? '+'
               : result.matchedKeys.contains(key.key)
-                  ? ' '
-                  : '?';
+              ? ' '
+              : '?';
           buffer.writeln('    [$status] ${key.key} (line ${key.line})');
         }
         buffer.writeln();
@@ -214,12 +215,14 @@ class JsonReporter implements ExtractReporter {
       'missing': result.missingInJson.map((key) {
         final locations = extracted.keys
             .where((k) => k.key == key)
-            .map((k) => {
-                  'file': k.filePath,
-                  'line': k.line,
-                  'callType': k.callType.name,
-                  if (k.snippet != null) 'snippet': k.snippet,
-                })
+            .map(
+              (k) => {
+                'file': k.filePath,
+                'line': k.line,
+                'callType': k.callType.name,
+                if (k.snippet != null) 'snippet': k.snippet,
+              },
+            )
             .toList();
 
         return {
@@ -253,12 +256,14 @@ class JsonReporter implements ExtractReporter {
         (file, keys) => MapEntry(
           file,
           keys
-              .map((k) => {
-                    'key': k.key,
-                    'line': k.line,
-                    'callType': k.callType.name,
-                    'isPlural': k.isPlural,
-                  })
+              .map(
+                (k) => {
+                  'key': k.key,
+                  'line': k.line,
+                  'callType': k.callType.name,
+                  'isPlural': k.isPlural,
+                },
+              )
               .toList(),
         ),
       );
@@ -293,7 +298,9 @@ class DiffReporter implements ExtractReporter {
     buffer.writeln('# Generated: ${DateTime.now().toUtc().toIso8601String()}');
     buffer.writeln('# Keys in code: ${result.stats.totalKeysInCode}');
     buffer.writeln('# Keys in JSON: ${result.stats.totalKeysInJson}');
-    buffer.writeln('# Coverage: ${result.stats.coveragePercent.toStringAsFixed(1)}%');
+    buffer.writeln(
+      '# Coverage: ${result.stats.coveragePercent.toStringAsFixed(1)}%',
+    );
     buffer.writeln();
 
     // Missing keys (to add)
@@ -326,7 +333,8 @@ class DiffReporter implements ExtractReporter {
       buffer.writeln('# Placeholder mismatches (need attention):');
       for (final mismatch in result.placeholderMismatches.values) {
         buffer.writeln(
-            '~ ${mismatch.key} # code:{${mismatch.inCode.join(',')}} json:{${mismatch.inJson.join(',')}}');
+          '~ ${mismatch.key} # code:{${mismatch.inCode.join(',')}} json:{${mismatch.inJson.join(',')}}',
+        );
       }
       buffer.writeln();
     }

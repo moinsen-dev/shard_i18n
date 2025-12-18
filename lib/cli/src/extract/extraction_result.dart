@@ -114,14 +114,14 @@ class ExtractionResult {
 
   /// Create an empty result.
   factory ExtractionResult.empty() => const ExtractionResult(
-        keys: [],
-        byFile: {},
-        uniqueKeys: {},
-        pluralKeys: {},
-        placeholdersByKey: {},
-        filesScanned: 0,
-        scanDuration: Duration.zero,
-      );
+    keys: [],
+    byFile: {},
+    uniqueKeys: {},
+    pluralKeys: {},
+    placeholdersByKey: {},
+    filesScanned: 0,
+    scanDuration: Duration.zero,
+  );
 }
 
 /// An error encountered during source file scanning.

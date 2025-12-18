@@ -5,6 +5,18 @@ All notable changes to shard_i18n will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2025-12-18
+
+### Fixed
+- Reformatted code to ensure pub.dev analyzer compatibility
+- Updated `.gitignore` to allow markdown documentation files in `doc/api/`
+
+### Changed
+- Enabled automated GitHub publishing via OIDC token authentication
+- Added GitHub Pages workflow for automatic documentation deployment
+
+---
+
 ## [0.3.0] - 2025-12-18
 
 ### Added

@@ -24,10 +24,7 @@ class I18nKeyExtractor {
   /// Callback for logging messages.
   final void Function(String message)? onLog;
 
-  I18nKeyExtractor({
-    this.verbose = false,
-    this.onLog,
-  });
+  I18nKeyExtractor({this.verbose = false, this.onLog});
 
   /// Extract i18n keys from a list of file paths.
   Future<ExtractionResult> extract(List<String> filePaths) async {
@@ -45,11 +42,9 @@ class I18nKeyExtractor {
           _log('Found ${keys.length} key(s) in $filePath');
         }
       } catch (e) {
-        errors.add(ScanError(
-          filePath: filePath,
-          message: e.toString(),
-          isWarning: true,
-        ));
+        errors.add(
+          ScanError(filePath: filePath, message: e.toString(), isWarning: true),
+        );
         _log('Warning: Could not parse $filePath: $e');
       }
     }
@@ -67,7 +62,9 @@ class I18nKeyExtractor {
         pluralKeys.add(key.key);
       }
       if (key.placeholders.isNotEmpty) {
-        placeholdersByKey.putIfAbsent(key.key, () => {}).addAll(key.placeholders);
+        placeholdersByKey
+            .putIfAbsent(key.key, () => {})
+            .addAll(key.placeholders);
       }
     }
 
@@ -113,10 +110,7 @@ class _I18nKeyExtractorVisitor extends RecursiveAstVisitor<void> {
   final LineInfo lineInfo;
   final List<ExtractedKey> extractedKeys = [];
 
-  _I18nKeyExtractorVisitor({
-    required this.filePath,
-    required this.lineInfo,
-  });
+  _I18nKeyExtractorVisitor({required this.filePath, required this.lineInfo});
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
@@ -166,16 +160,18 @@ class _I18nKeyExtractorVisitor extends RecursiveAstVisitor<void> {
     final isPlural = methodName == 'tn';
     final location = lineInfo.getLocation(node.offset);
 
-    extractedKeys.add(ExtractedKey(
-      key: key,
-      filePath: filePath,
-      line: location.lineNumber,
-      column: location.columnNumber,
-      callType: isPlural ? I18nCallType.contextTn : I18nCallType.contextT,
-      placeholders: _extractPlaceholders(key),
-      isPlural: isPlural,
-      snippet: _getSnippet(node),
-    ));
+    extractedKeys.add(
+      ExtractedKey(
+        key: key,
+        filePath: filePath,
+        line: location.lineNumber,
+        column: location.columnNumber,
+        callType: isPlural ? I18nCallType.contextTn : I18nCallType.contextT,
+        placeholders: _extractPlaceholders(key),
+        isPlural: isPlural,
+        snippet: _getSnippet(node),
+      ),
+    );
   }
 
   /// Check for 'key'.t({...}) or 'key'.tn(count: n) string extension patterns.
@@ -193,16 +189,18 @@ class _I18nKeyExtractorVisitor extends RecursiveAstVisitor<void> {
     final isPlural = methodName == 'tn';
     final location = lineInfo.getLocation(node.offset);
 
-    extractedKeys.add(ExtractedKey(
-      key: key,
-      filePath: filePath,
-      line: location.lineNumber,
-      column: location.columnNumber,
-      callType: isPlural ? I18nCallType.stringTn : I18nCallType.stringT,
-      placeholders: _extractPlaceholders(key),
-      isPlural: isPlural,
-      snippet: _getSnippet(node),
-    ));
+    extractedKeys.add(
+      ExtractedKey(
+        key: key,
+        filePath: filePath,
+        line: location.lineNumber,
+        column: location.columnNumber,
+        callType: isPlural ? I18nCallType.stringTn : I18nCallType.stringT,
+        placeholders: _extractPlaceholders(key),
+        isPlural: isPlural,
+        snippet: _getSnippet(node),
+      ),
+    );
   }
 
   /// Check for 'key'.tx getter pattern via PropertyAccess.
@@ -217,16 +215,18 @@ class _I18nKeyExtractorVisitor extends RecursiveAstVisitor<void> {
 
     final location = lineInfo.getLocation(node.offset);
 
-    extractedKeys.add(ExtractedKey(
-      key: key,
-      filePath: filePath,
-      line: location.lineNumber,
-      column: location.columnNumber,
-      callType: I18nCallType.stringTx,
-      placeholders: _extractPlaceholders(key),
-      isPlural: false,
-      snippet: _getSnippet(node),
-    ));
+    extractedKeys.add(
+      ExtractedKey(
+        key: key,
+        filePath: filePath,
+        line: location.lineNumber,
+        column: location.columnNumber,
+        callType: I18nCallType.stringTx,
+        placeholders: _extractPlaceholders(key),
+        isPlural: false,
+        snippet: _getSnippet(node),
+      ),
+    );
   }
 
   /// Check for prefixed identifier form of .tx.
@@ -242,16 +242,18 @@ class _I18nKeyExtractorVisitor extends RecursiveAstVisitor<void> {
 
     final location = lineInfo.getLocation(node.offset);
 
-    extractedKeys.add(ExtractedKey(
-      key: key,
-      filePath: filePath,
-      line: location.lineNumber,
-      column: location.columnNumber,
-      callType: I18nCallType.stringTx,
-      placeholders: _extractPlaceholders(key),
-      isPlural: false,
-      snippet: _getSnippet(node),
-    ));
+    extractedKeys.add(
+      ExtractedKey(
+        key: key,
+        filePath: filePath,
+        line: location.lineNumber,
+        column: location.columnNumber,
+        callType: I18nCallType.stringTx,
+        placeholders: _extractPlaceholders(key),
+        isPlural: false,
+        snippet: _getSnippet(node),
+      ),
+    );
   }
 
   /// Extract string value from an expression.

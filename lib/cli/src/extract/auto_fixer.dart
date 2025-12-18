@@ -59,8 +59,9 @@ class AutoFixer {
     for (final key in comparison.missingInJson) {
       // Find the source file for this key to determine shard
       final keyLocations = extracted.keys.where((k) => k.key == key);
-      final sourceFile =
-          keyLocations.isNotEmpty ? keyLocations.first.filePath : null;
+      final sourceFile = keyLocations.isNotEmpty
+          ? keyLocations.first.filePath
+          : null;
       final shard = comparator.detectShard(key, sourceFile);
 
       keysByShard.putIfAbsent(shard, () => {});
@@ -85,7 +86,9 @@ class AutoFixer {
         await _mergeIntoFile(targetPath, newKeys);
         filesModified.add(targetPath);
         keysAdded += newKeys.length;
-        _log('${dryRun ? "[DRY RUN] Would add" : "Added"} ${newKeys.length} key(s) to $shardFile');
+        _log(
+          '${dryRun ? "[DRY RUN] Would add" : "Added"} ${newKeys.length} key(s) to $shardFile',
+        );
       } catch (e) {
         warnings.add('Could not write to $targetPath: $e');
       }
@@ -137,8 +140,9 @@ class AutoFixer {
         final Map<String, dynamic> data = json.decode(content);
 
         // Find keys to remove from this file
-        final keysToRemove =
-            data.keys.where((k) => comparison.orphanedInJson.contains(k)).toList();
+        final keysToRemove = data.keys
+            .where((k) => comparison.orphanedInJson.contains(k))
+            .toList();
 
         if (keysToRemove.isEmpty) continue;
 
@@ -155,7 +159,8 @@ class AutoFixer {
         filesModified.add(entity.path);
         keysRemoved += keysToRemove.length;
         _log(
-            '${dryRun ? "[DRY RUN] Would remove" : "Removed"} ${keysToRemove.length} key(s) from ${p.basename(entity.path)}');
+          '${dryRun ? "[DRY RUN] Would remove" : "Removed"} ${keysToRemove.length} key(s) from ${p.basename(entity.path)}',
+        );
       } catch (e) {
         warnings.add('Could not process ${entity.path}: $e');
       }
@@ -225,10 +230,7 @@ class AutoFixer {
       template = '{count} $key';
     }
 
-    return {
-      'one': template,
-      'other': template,
-    };
+    return {'one': template, 'other': template};
   }
 
   /// Merge new keys into an existing JSON file.

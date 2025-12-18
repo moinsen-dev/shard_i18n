@@ -654,10 +654,7 @@ extension ShardI18nStringX on String {
   /// ```dart
   /// Text('items_count'.tn(count: items.length))
   /// ```
-  String tn({
-    required num count,
-    Map<String, Object?> params = const {},
-  }) {
+  String tn({required num count, Map<String, Object?> params = const {}}) {
     return ShardI18n.instance.plural(this, count: count, params: params);
   }
 }

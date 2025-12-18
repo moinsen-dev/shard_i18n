@@ -103,7 +103,8 @@ void main(List<String> arguments) async {
         ..addFlag(
           'dry-run',
           negatable: false,
-          help: 'Preview changes without writing files (use with --fix/--prune)',
+          help:
+              'Preview changes without writing files (use with --fix/--prune)',
         )
         ..addFlag(
           'strict',
@@ -678,11 +679,10 @@ Future<int> runExtract(ArgResults command) async {
   }
 
   // Find all Dart files
-  final dartFiles = await findDartFiles(sourcePath, exclude: [
-    'generated',
-    '.g.dart',
-    '.freezed.dart',
-  ]);
+  final dartFiles = await findDartFiles(
+    sourcePath,
+    exclude: ['generated', '.g.dart', '.freezed.dart'],
+  );
 
   if (dartFiles.isEmpty) {
     print('No Dart files found in $sourcePath');
