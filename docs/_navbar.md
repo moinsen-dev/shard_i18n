@@ -1,0 +1,3 @@
+- [Documentation](/)
+- [GitHub](https://github.com/moinsen-dev/shard_i18n)
+- [pub.dev](https://pub.dev/packages/shard_i18n)

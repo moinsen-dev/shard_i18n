@@ -5,6 +5,47 @@ All notable changes to shard_i18n will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-12-18
+
+### Added
+
+#### New CLI Command: `extract`
+- **Source code scanning** - Detect all i18n API usage patterns in Dart files:
+  - `context.t('key')` / `context.t('key', params: {...})`
+  - `context.tn('key', count: n)`
+  - `'key'.tx` (getter)
+  - `'key'.t({...})` / `'key'.tn(count: n)`
+- **JSON comparison** - Compare extracted keys against translation files
+- **Output formats**:
+  - `text` - Human-readable with statistics
+  - `json` - Machine-readable for CI/CD integration
+  - `diff` - Git-style `+`/`-` format
+- **Auto-fix mode** (`--fix`) - Generate missing entries in reference locale
+- **Prune mode** (`--prune`) - Remove orphaned keys not found in code
+- **Strict mode** (`--strict`) - Exit code 1 on discrepancies (for CI)
+- **Placeholder validation** - Detect mismatches between code and JSON
+- **Plural form validation** - Check for proper plural structures
+- **Verbose mode** (`-v`) - Show per-file breakdown of found keys
+
+#### Documentation Site
+- **Docsify-based documentation** - Zero build step, GitHub Pages ready
+- **Getting Started** - Installation, quick start, basic usage guides
+- **Core Concepts** - Msgid translations, sharded files, fallback strategy, pluralization, interpolation
+- **API Reference** - Complete documentation of ShardI18n class, extensions, plural rules
+- **CLI Tools** - Detailed documentation for verify, fill, and extract commands
+- **Migrator** - Step-by-step guides for migrating from gen_l10n and easy_localization
+- **Guides** - Migration, BLoC integration, testing, CI/CD
+- **Advanced Topics** - Custom plural rules, performance optimization, large apps
+
+### Changed
+- CLI version updated to 0.3.0
+- Added `analyzer` dependency for AST parsing in extract command
+
+### Fixed
+- Closes [#2](https://github.com/moinsen-dev/shard_i18n/issues/2) - Add `extract` command
+
+---
+
 ## [0.2.2] - 2025-12-03
 
 ### Added
@@ -167,6 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.3.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.3.0
 [0.2.2]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.2
 [0.2.1]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.1
 [0.2.0]: https://github.com/moinsen-dev/shard_i18n/releases/tag/v0.2.0

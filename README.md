@@ -11,10 +11,13 @@ A tiny, production-ready i18n layer for Flutter that solves the pain points of t
 - ✅ **CLDR plurals** - Proper `one/few/many/other` forms for 15+ languages
 - ✅ **Automated migration** - Migrate existing apps automatically with `shard_i18n_migrator`
 - ✅ **AI-powered CLI** - Auto-translate missing keys with OpenAI/DeepL
+- ✅ **Code-to-JSON sync** - `extract` command finds i18n usage and compares with JSON files
 
 [![pub package](https://img.shields.io/pub/v/shard_i18n.svg)](https://pub.dev/packages/shard_i18n)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/moinsen-dev/shard_i18n/workflows/CI/badge.svg)](https://github.com/moinsen-dev/shard_i18n/actions)
+
+📚 **[Full Documentation](https://moinsen-dev.github.io/shard_i18n/)** | 📦 **[pub.dev](https://pub.dev/packages/shard_i18n)** | 🐛 **[Issues](https://github.com/moinsen-dev/shard_i18n/issues)**
 
 ---
 
@@ -43,7 +46,7 @@ Large teams fight over one giant ARB/JSON file and slow codegen cycles. `shard_i
 dependencies:
   flutter:
     sdk: flutter
-  shard_i18n: ^0.2.2
+  shard_i18n: ^0.3.0
   flutter_bloc: ^8.1.4        # for state management (optional but recommended)
   shared_preferences: ^2.2.3   # for persisting language choice (optional)
 
@@ -463,6 +466,53 @@ shard_i18n_cli fill \
 
 The CLI preserves `{placeholders}` and writes translated entries to the appropriate locale files.
 
+### Extract i18n Keys from Code (NEW in v0.3.0)
+
+Scan your source code to find all i18n usage and compare with JSON files:
+
+```bash
+# Basic usage - find discrepancies
+shard_i18n_cli extract
+
+# JSON output for CI/CD
+shard_i18n_cli extract --format=json --strict
+
+# Auto-fix missing keys
+shard_i18n_cli extract --fix
+
+# Remove orphaned keys
+shard_i18n_cli extract --prune
+
+# Preview changes
+shard_i18n_cli extract --fix --dry-run
+```
+
+**Features:**
+- Detects all i18n patterns: `context.t()`, `context.tn()`, `'key'.tx`, `'key'.t()`, `'key'.tn()`
+- Three output formats: `text`, `json`, `diff`
+- `--strict` mode for CI (exit code 1 on issues)
+- `--fix` auto-generates missing entries
+- `--prune` removes orphaned keys from JSON
+- Validates placeholder consistency
+- Checks plural form structure
+
+**Example output:**
+```
+🔍 Scanning lib/ for i18n usage...
+
+✅ Statistics:
+   Files scanned:     42
+   Keys in code:      156
+   Keys in JSON:      160
+   Matched:           152 (97.4%)
+   Missing in JSON:   4
+   Orphaned in JSON:  8
+
+❌ Missing in JSON (4):
+   • "New feature text"
+   • "Upload failed: {error}"
+```
+
 ---
 
 ## 2. Migration Tool (`shard_i18n_migrator`)
@@ -693,10 +743,10 @@ If you prefer manual migration or have a unique setup:
 
 ## Roadmap
 
+- [x] ~~Build-time reporting for CI (missing keys diff)~~ - Added in v0.3.0 with `extract` command
 - [ ] Rich ICU message format support (`select`, `gender`)
 - [ ] Dev overlay for live-editing translations in debug mode
 - [ ] VS Code extension (quick-add keys, jump to definition)
-- [ ] Build-time reporting for CI (missing keys diff)
 - [ ] JSON schema validation for translation files
 
 ---
