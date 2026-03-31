@@ -304,6 +304,7 @@ class ShardI18n extends ChangeNotifier {
     _assetManifest = null;
     _locale = const Locale('en');
     _pluralRules.clear();
+    debugLogMissingKeys = false;
   }
 
   /// Load translations directly from a map for testing.
