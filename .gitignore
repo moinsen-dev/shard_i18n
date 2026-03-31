@@ -1,3 +1,6 @@
+# Worktrees
+.worktrees/
+
 # Miscellaneous
 *.class
 *.log
@@ -33,5 +36,5 @@ doc/api/*.css
 doc/api/index.json
 .dart_tool/
 .flutter-plugins-dependencies
-/build/
+**/build/
 /coverage/

@@ -66,13 +66,16 @@ class ShardI18n extends ChangeNotifier {
   bool _bootstrapped = false;
 
   /// Enable debug logging for missing translation keys
-  bool debugLogMissingKeys = true;
+  bool debugLogMissingKeys = false;
 
   /// Set to track already-logged missing keys (prevent spam)
   final Set<String> _loggedMissingKeys = {};
 
   /// Cached asset manifest instance
   AssetManifest? _assetManifest;
+
+  /// Pre-compiled regex for placeholder interpolation.
+  static final _placeholderRegExp = RegExp(r'\{(\w+)\}');
 
   /// Get the current effective locale
   Locale get locale => _locale;
@@ -290,6 +293,32 @@ class ShardI18n extends ChangeNotifier {
     developer.log('Translation cache cleared', name: 'shard_i18n');
   }
 
+  /// Reset the entire instance for test isolation.
+  @visibleForTesting
+  void resetForTesting() {
+    _bootstrapped = false;
+    _dict = {};
+    _cache.clear();
+    _loggedMissingKeys.clear();
+    _supportedLocales = null;
+    _assetManifest = null;
+    _locale = const Locale('en');
+    _pluralRules.clear();
+    debugLogMissingKeys = false;
+  }
+
+  /// Load translations directly from a map for testing.
+  @visibleForTesting
+  void loadTranslationsForTesting(
+    Map<String, dynamic> translations,
+    Locale locale,
+  ) {
+    _dict = translations;
+    _locale = locale;
+    _bootstrapped = true;
+    _installDefaultPluralRules();
+  }
+
   // ==================== INTERNAL METHODS ====================
 
   /// Load and merge translations for a specific locale.
@@ -448,7 +477,7 @@ class ShardI18n extends ChangeNotifier {
   String _interpolate(String template, Map<String, Object?> params) {
     if (params.isEmpty) return template;
 
-    return template.replaceAllMapped(RegExp(r'\{(\w+)\}'), (match) {
+    return template.replaceAllMapped(_placeholderRegExp, (match) {
       final key = match.group(1)!;
       final value = params[key];
 

@@ -8,9 +8,11 @@ import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
-import 'package:shard_i18n/cli/src/extract/extract.dart';
+import 'package:shard_i18n_cli/src/extract/extract.dart';
+import 'package:shard_i18n_cli/src/migrator/migrator.dart';
+import 'package:shard_i18n_cli/src/migrator/config/migration_config.dart';
 
-const String version = '0.3.0';
+const String version = '0.4.0';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
@@ -117,6 +119,47 @@ void main(List<String> arguments) async {
           negatable: false,
           help: 'Show detailed per-file breakdown',
         ),
+    )
+    ..addCommand(
+      'analyze',
+      ArgParser()..addOption(
+        'path',
+        abbr: 'p',
+        defaultsTo: 'lib',
+        help: 'Path to analyze (default: lib)',
+      ),
+    )
+    ..addCommand(
+      'migrate',
+      ArgParser()
+        ..addOption(
+          'path',
+          abbr: 'p',
+          defaultsTo: 'lib',
+          help: 'Path to migrate (default: lib)',
+        )
+        ..addFlag(
+          'dry-run',
+          negatable: false,
+          help: 'Preview changes without modifying files',
+        )
+        ..addFlag(
+          'auto',
+          negatable: false,
+          help: 'Non-interactive mode using config file',
+        )
+        ..addOption(
+          'config',
+          abbr: 'c',
+          defaultsTo: 'migration_config.yaml',
+          help: 'Path to configuration file',
+        ),
+    )
+    ..addCommand('init', ArgParser())
+    ..addFlag(
+      'verbose-global',
+      negatable: false,
+      help: 'Show verbose output',
     );
 
   try {
@@ -150,6 +193,15 @@ void main(List<String> arguments) async {
       case 'extract':
         final exitCode = await runExtract(command);
         exit(exitCode);
+      case 'analyze':
+        await _handleAnalyze(command, results['verbose-global'] as bool);
+        break;
+      case 'migrate':
+        await _handleMigrate(command, results['verbose-global'] as bool);
+        break;
+      case 'init':
+        await _handleInit(command, results['verbose-global'] as bool);
+        break;
       default:
         print('Error: Unknown command "${command.name}"');
         exit(1);
@@ -170,6 +222,9 @@ Commands:
   verify    Verify translation consistency across locales
   fill      Fill missing translations using AI providers
   extract   Extract i18n keys from code and compare with JSON files
+  analyze   Analyze project and show migration preview
+  migrate   Migrate project to use shard_i18n
+  init      Create default migration configuration file
 
 Global options:
 ${parser.usage}
@@ -755,4 +810,113 @@ Future<int> runExtract(ArgResults command) async {
   }
 
   return 0;
+}
+
+// ==================== MIGRATOR COMMAND HANDLERS ====================
+
+Future<void> _handleAnalyze(ArgResults command, bool verbose) async {
+  final path = command['path'] as String;
+  print('Analyzing project at: $path');
+  print('');
+
+  final migrator = ShardI18nMigrator(verbose: verbose);
+  final analysis = await migrator.analyze(path);
+
+  print('Analysis Results:');
+  print('─' * 60);
+  print('Total string literals found: ${analysis.totalStrings}');
+  print('Extractable UI strings: ${analysis.extractableStrings}');
+  print('Technical/code strings: ${analysis.technicalStrings}');
+  print('Ambiguous strings (require review): ${analysis.ambiguousStrings}');
+  print('');
+  print('Interpolation patterns detected: ${analysis.interpolationCount}');
+  print('Plural patterns detected: ${analysis.pluralCount}');
+  print('');
+  print(
+    'Average confidence score: ${analysis.averageConfidence.toStringAsFixed(1)}%',
+  );
+  print('─' * 60);
+  print('');
+
+  if (analysis.ambiguousStrings > 0) {
+    print('Run "shard_i18n_cli migrate $path" for interactive migration');
+  } else {
+    print(
+      'Run "shard_i18n_cli migrate $path --auto" for automatic migration',
+    );
+  }
+}
+
+Future<void> _handleMigrate(ArgResults command, bool verbose) async {
+  final path = command['path'] as String;
+  final dryRun = command['dry-run'] as bool;
+  final auto = command['auto'] as bool;
+  final configPath = command['config'] as String;
+
+  print('${dryRun ? "Previewing" : "Starting"} migration for: $path');
+  print('Mode: ${auto ? "Automatic" : "Interactive"}');
+  if (dryRun) {
+    print('DRY RUN - No files will be modified');
+  }
+  print('');
+
+  final migrator = ShardI18nMigrator(verbose: verbose);
+
+  MigrationConfig? config;
+  if (File(configPath).existsSync()) {
+    config = await MigrationConfig.load(configPath);
+    print('Loaded configuration from: $configPath');
+    print('');
+  }
+
+  final result = await migrator.migrate(
+    path,
+    config: config,
+    dryRun: dryRun,
+    interactive: !auto,
+  );
+
+  print('');
+  print('Migration ${dryRun ? "Preview" : "Complete"}!');
+  print('─' * 60);
+  print('Files created:');
+  for (final file in result.createdFiles) {
+    print('  + $file');
+  }
+  print('');
+  print('Files modified:');
+  for (final file in result.modifiedFiles) {
+    print('  + $file');
+  }
+  print('');
+  print('Strings extracted: ${result.stringsExtracted}');
+  print('JSON keys generated: ${result.jsonKeysGenerated}');
+  print('─' * 60);
+
+  if (!dryRun) {
+    print('');
+    print('Next steps:');
+    print('1. Run: flutter pub get');
+    print('2. Test: flutter run');
+    print('3. Verify: dart run shard_i18n_cli verify');
+    print('4. Translate: dart run shard_i18n_cli fill --to=de,fr,es');
+  }
+}
+
+Future<void> _handleInit(ArgResults command, bool verbose) async {
+  const configPath = 'migration_config.yaml';
+
+  if (File(configPath).existsSync()) {
+    print('Configuration file already exists: $configPath');
+    print('Delete it first if you want to regenerate.');
+    exit(1);
+  }
+
+  final config = MigrationConfig.createDefault();
+  await config.save(configPath);
+
+  print('Created configuration file: $configPath');
+  print('');
+  print('Edit this file to customize the migration process.');
+  print('Then run: shard_i18n_cli migrate');
 }
