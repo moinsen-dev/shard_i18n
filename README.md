@@ -9,7 +9,7 @@ A tiny, production-ready i18n layer for Flutter that solves the pain points of t
 - ✅ **BLoC-ready** - Tiny `LanguageCubit` drives `Locale`; UI pulls strings via context
 - ✅ **Dynamic switching** - Change language at runtime without restart
 - ✅ **CLDR plurals** - Proper `one/few/many/other` forms for 15+ languages
-- ✅ **Automated migration** - Migrate existing apps automatically with `shard_i18n_migrator`
+- ✅ **Automated migration** - Migrate existing apps automatically with `shard_i18n_cli`
 - ✅ **AI-powered CLI** - Auto-translate missing keys with OpenAI/DeepL
 - ✅ **Code-to-JSON sync** - `extract` command finds i18n usage and compares with JSON files
 
@@ -389,7 +389,7 @@ dart pub global activate shard_i18n
 
 # Use commands directly
 shard_i18n_cli verify
-shard_i18n_migrator analyze lib/
+shard_i18n_cli analyze lib/
 ```
 
 **Local execution (without global install):**
@@ -397,7 +397,7 @@ shard_i18n_migrator analyze lib/
 ```bash
 # Run from your project directory
 dart run shard_i18n_cli verify
-dart run shard_i18n_migrator analyze lib/
+dart run shard_i18n_cli analyze lib/
 ```
 
 ---
@@ -515,7 +515,7 @@ shard_i18n_cli extract --fix --dry-run
 
 ---
 
-## 2. Migration Tool (`shard_i18n_migrator`)
+## 2. Migration Tool (`shard_i18n_cli`)
 
 Automatically migrate existing Flutter apps to use shard_i18n. The migrator analyzes your codebase, extracts translatable strings, and transforms your code to use the shard_i18n API.
 
@@ -524,8 +524,8 @@ Automatically migrate existing Flutter apps to use shard_i18n. The migrator anal
 Preview what strings will be extracted without making changes:
 
 ```bash
-shard_i18n_migrator analyze lib/
-# or: dart run shard_i18n_migrator analyze lib/
+shard_i18n_cli analyze lib/
+# or: dart run shard_i18n_cli analyze lib/
 ```
 
 Output shows:
@@ -544,13 +544,13 @@ Transform your code to use shard_i18n:
 
 ```bash
 # Dry run (preview changes without writing)
-shard_i18n_migrator migrate lib/ --dry-run
+shard_i18n_cli migrate lib/ --dry-run
 
 # Interactive mode (asks for confirmation on ambiguous strings)
-shard_i18n_migrator migrate lib/
+shard_i18n_cli migrate lib/
 
 # Automatic mode (extracts everything above confidence threshold)
-shard_i18n_migrator migrate lib/ --auto
+shard_i18n_cli migrate lib/ --auto
 ```
 
 **What it does:**
@@ -604,13 +604,13 @@ sharding:
 
 1. **Analyze first:**
    ```bash
-   shard_i18n_migrator analyze lib/ --verbose
+   shard_i18n_cli analyze lib/ --verbose
    ```
 
 2. **Test on a single feature:**
    ```bash
-   shard_i18n_migrator migrate lib/auth/ --dry-run
-   shard_i18n_migrator migrate lib/auth/
+   shard_i18n_cli migrate lib/auth/ --dry-run
+   shard_i18n_cli migrate lib/auth/
    ```
 
 3. **Run tests:**
@@ -620,7 +620,7 @@ sharding:
 
 4. **Migrate remaining code:**
    ```bash
-   shard_i18n_migrator migrate lib/ --auto
+   shard_i18n_cli migrate lib/ --auto
    ```
 
 5. **Verify translations:**
@@ -693,14 +693,14 @@ testWidgets('displays translated text', (tester) async {
 
 ### Automated Migration (Recommended)
 
-Use the **shard_i18n_migrator** tool for automated migration from any existing i18n solution:
+Use the **shard_i18n_cli** tool for automated migration from any existing i18n solution:
 
 ```bash
 # 1. Analyze your codebase
-shard_i18n_migrator analyze lib/ --verbose
+shard_i18n_cli analyze lib/ --verbose
 
 # 2. Run migration (interactive mode)
-shard_i18n_migrator migrate lib/
+shard_i18n_cli migrate lib/
 
 # 3. Review changes and test
 flutter test
@@ -716,7 +716,7 @@ The migrator automatically:
 - ✅ Preserves interpolation and plural forms
 - ✅ Adds necessary imports
 
-See the [Migration Tool section](#2-migration-tool-shard_i18n_migrator) above for detailed usage.
+See the [Migration Tool section](#2-migration-tool-shard_i18n_cli) above for detailed usage.
 
 ### Manual Migration
 

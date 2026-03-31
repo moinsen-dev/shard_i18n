@@ -5,6 +5,38 @@ All notable changes to shard_i18n will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-03-31
+
+### Changed
+- **BREAKING: Package split into workspace** — `shard_i18n` (runtime) and
+  `shard_i18n_cli` (CLI + migrator) are now separate packages in a Dart workspace
+- `debugLogMissingKeys` now defaults to `false`
+- Unified CLI: migrator commands (`migrate`, `analyze`, `init`) merged into `shard_i18n_cli`
+- Interpolation RegExp compiled once as static field (minor perf improvement)
+
+### Added
+- `resetForTesting()` method for test isolation (`@visibleForTesting`)
+- `loadTranslationsForTesting()` method for unit testing without asset bundle
+- 61 tests (up from 12) covering core runtime, extensions, and CLI tools
+
+### Removed
+- `shard_i18n_migrator` as separate executable (use `shard_i18n_cli migrate`)
+- `shard_i18n_migrator.dart` library export from runtime package
+
+### Migration from 0.3.x
+- `import 'package:shard_i18n/shard_i18n.dart'` — unchanged
+- CLI: `dart run shard_i18n_cli verify` (instead of `dart run shard_i18n:shard_i18n_cli verify`)
+- If you used `debugLogMissingKeys`, note it now defaults to `false`
+
+---
+
+## [0.3.2] - 2025-12-18
+
+### Changed
+- Bumped version for dependency updates
+
+---
+
 ## [0.3.1] - 2025-12-18
 
 ### Fixed
