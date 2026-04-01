@@ -1,6 +1,6 @@
 name: shard_i18n_cli
 description: CLI tools for shard_i18n - verify, fill, extract, and migrate translations.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/moinsen-dev/shard_i18n
 repository: https://github.com/moinsen-dev/shard_i18n
 resolution: workspace
@@ -9,7 +9,7 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
-  analyzer: ^9.0.0
+  analyzer: '>=9.0.0 <13.0.0'
   args: ^2.7.0
   http: ^1.6.0
   path: ^1.9.1

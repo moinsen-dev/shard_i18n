@@ -12,7 +12,7 @@ import 'package:shard_i18n_cli/src/extract/extract.dart';
 import 'package:shard_i18n_cli/src/migrator/migrator.dart';
 import 'package:shard_i18n_cli/src/migrator/config/migration_config.dart';
 
-const String version = '0.4.0';
+const String version = '0.4.1';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
