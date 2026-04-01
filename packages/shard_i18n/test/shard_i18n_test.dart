@@ -103,32 +103,20 @@ void main() {
     setUp(() {
       ShardI18n.instance.resetForTesting();
       ShardI18n.instance.loadTranslationsForTesting({
-        'items': {
-          'one': '{count} item',
-          'other': '{count} items',
-        },
+        'items': {'one': '{count} item', 'other': '{count} items'},
       }, const Locale('en'));
     });
 
     test('count 1 returns one form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 item'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 item'));
     });
 
     test('count 0 returns other form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 0),
-        equals('0 items'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 0), equals('0 items'));
     });
 
     test('count 5 returns other form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 5),
-        equals('5 items'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 5), equals('5 items'));
     });
   });
 
@@ -147,10 +135,7 @@ void main() {
     });
 
     test('1 returns one form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 предмет'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 предмет'));
     });
 
     test('2 returns few form', () {
@@ -196,24 +181,15 @@ void main() {
     });
 
     test('1 returns one form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 položka'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 položka'));
     });
 
     test('3 returns few form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 3),
-        equals('3 položky'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 3), equals('3 položky'));
     });
 
     test('5 returns other form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 5),
-        equals('5 položek'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 5), equals('5 položek'));
     });
   });
 
@@ -222,21 +198,13 @@ void main() {
     setUp(() {
       ShardI18n.instance.resetForTesting();
       ShardI18n.instance.loadTranslationsForTesting({
-        'items': {
-          'other': '{count} öğe',
-        },
+        'items': {'other': '{count} öğe'},
       }, const Locale('tr'));
     });
 
     test('always returns other form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 öğe'),
-      );
-      expect(
-        ShardI18n.instance.plural('items', count: 5),
-        equals('5 öğe'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 öğe'));
+      expect(ShardI18n.instance.plural('items', count: 5), equals('5 öğe'));
     });
   });
 
@@ -245,25 +213,16 @@ void main() {
     setUp(() {
       ShardI18n.instance.resetForTesting();
       ShardI18n.instance.loadTranslationsForTesting({
-        'items': {
-          'one': '{count} élément',
-          'other': '{count} éléments',
-        },
+        'items': {'one': '{count} élément', 'other': '{count} éléments'},
       }, const Locale('fr'));
     });
 
     test('0 returns one form (French treats 0 as singular)', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 0),
-        equals('0 élément'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 0), equals('0 élément'));
     });
 
     test('1 returns one form', () {
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 élément'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 élément'));
     });
 
     test('2 returns other form', () {
@@ -279,20 +238,14 @@ void main() {
     setUp(() {
       ShardI18n.instance.resetForTesting();
       ShardI18n.instance.loadTranslationsForTesting({
-        'items': {
-          'one': '{count} thing',
-          'other': '{count} things',
-        },
+        'items': {'one': '{count} thing', 'other': '{count} things'},
       }, const Locale('en'));
     });
 
     test('registerPluralRule overrides default', () {
       // Override English rule so everything is "other"
       ShardI18n.instance.registerPluralRule('en', (n) => 'other');
-      expect(
-        ShardI18n.instance.plural('items', count: 1),
-        equals('1 things'),
-      );
+      expect(ShardI18n.instance.plural('items', count: 1), equals('1 things'));
     });
   });
 
@@ -302,9 +255,7 @@ void main() {
 
     test('falls back to other when specific form missing', () {
       ShardI18n.instance.loadTranslationsForTesting({
-        'items': {
-          'other': '{count} items (fallback)',
-        },
+        'items': {'other': '{count} items (fallback)'},
       }, const Locale('en'));
 
       // English count=1 wants "one" but only "other" exists
@@ -360,10 +311,7 @@ void main() {
       ShardI18n.instance.loadTranslationsForTesting({
         'Hello': 'Hola',
         'Hi {name}': 'Hola {name}',
-        'apples': {
-          'one': '{count} manzana',
-          'other': '{count} manzanas',
-        },
+        'apples': {'one': '{count} manzana', 'other': '{count} manzanas'},
       }, const Locale('es'));
     });
 
@@ -372,10 +320,7 @@ void main() {
     });
 
     test('.t() with params interpolates', () {
-      expect(
-        'Hi {name}'.t({'name': 'Mundo'}),
-        equals('Hola Mundo'),
-      );
+      expect('Hi {name}'.t({'name': 'Mundo'}), equals('Hola Mundo'));
     });
 
     test('.tn() pluralizes', () {

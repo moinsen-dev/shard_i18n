@@ -111,12 +111,12 @@ void main() {
       final localeDir = Directory(p.join(tmpDir.path, 'en'));
       localeDir.createSync(recursive: true);
 
-      File(p.join(localeDir.path, 'core.json')).writeAsStringSync(
-        json.encode({'hello': 'Hello', 'bye': 'Goodbye'}),
-      );
-      File(p.join(localeDir.path, 'auth.json')).writeAsStringSync(
-        json.encode({'login': 'Login', 'logout': 'Logout'}),
-      );
+      File(
+        p.join(localeDir.path, 'core.json'),
+      ).writeAsStringSync(json.encode({'hello': 'Hello', 'bye': 'Goodbye'}));
+      File(
+        p.join(localeDir.path, 'auth.json'),
+      ).writeAsStringSync(json.encode({'login': 'Login', 'logout': 'Logout'}));
 
       final result = await loadLocaleTranslations(tmpDir.path, 'en');
       expect(result, hasLength(4));
@@ -133,12 +133,12 @@ void main() {
       final localeDir = Directory(p.join(tmpDir.path, 'en'));
       localeDir.createSync(recursive: true);
 
-      File(p.join(localeDir.path, 'good.json')).writeAsStringSync(
-        json.encode({'key': 'value'}),
-      );
-      File(p.join(localeDir.path, 'bad.json')).writeAsStringSync(
-        'NOT VALID JSON {{{',
-      );
+      File(
+        p.join(localeDir.path, 'good.json'),
+      ).writeAsStringSync(json.encode({'key': 'value'}));
+      File(
+        p.join(localeDir.path, 'bad.json'),
+      ).writeAsStringSync('NOT VALID JSON {{{');
 
       final result = await loadLocaleTranslations(tmpDir.path, 'en');
       expect(result, equals({'key': 'value'}));

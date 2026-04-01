@@ -156,11 +156,7 @@ void main(List<String> arguments) async {
         ),
     )
     ..addCommand('init', ArgParser())
-    ..addFlag(
-      'verbose-global',
-      negatable: false,
-      help: 'Show verbose output',
-    );
+    ..addFlag('verbose-global', negatable: false, help: 'Show verbose output');
 
   try {
     final results = parser.parse(arguments);
@@ -841,9 +837,7 @@ Future<void> _handleAnalyze(ArgResults command, bool verbose) async {
   if (analysis.ambiguousStrings > 0) {
     print('Run "shard_i18n_cli migrate $path" for interactive migration');
   } else {
-    print(
-      'Run "shard_i18n_cli migrate $path --auto" for automatic migration',
-    );
+    print('Run "shard_i18n_cli migrate $path --auto" for automatic migration');
   }
 }
 

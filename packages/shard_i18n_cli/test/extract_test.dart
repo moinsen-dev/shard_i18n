@@ -221,40 +221,40 @@ void build(BuildContext context) {
       expect(result.orphanedInJson, isNot(contains('used_key')));
     });
 
-    test('detects plural form issues (tn used but JSON value is not a map)',
-        () async {
-      writeJson('en', 'core.json', {
-        'item_count': 'Not a plural map',
-      });
+    test(
+      'detects plural form issues (tn used but JSON value is not a map)',
+      () async {
+        writeJson('en', 'core.json', {'item_count': 'Not a plural map'});
 
-      final comparator = JsonComparator(
-        i18nPath: tmpDir.path,
-        referenceLocale: 'en',
-      );
+        final comparator = JsonComparator(
+          i18nPath: tmpDir.path,
+          referenceLocale: 'en',
+        );
 
-      final extracted = ExtractionResult(
-        keys: [
-          ExtractedKey(
-            key: 'item_count',
-            filePath: 'a.dart',
-            line: 1,
-            column: 1,
-            callType: I18nCallType.contextTn,
-            isPlural: true,
-          ),
-        ],
-        byFile: {},
-        uniqueKeys: {'item_count'},
-        pluralKeys: {'item_count'},
-        placeholdersByKey: {},
-        filesScanned: 1,
-        scanDuration: Duration.zero,
-      );
+        final extracted = ExtractionResult(
+          keys: [
+            ExtractedKey(
+              key: 'item_count',
+              filePath: 'a.dart',
+              line: 1,
+              column: 1,
+              callType: I18nCallType.contextTn,
+              isPlural: true,
+            ),
+          ],
+          byFile: {},
+          uniqueKeys: {'item_count'},
+          pluralKeys: {'item_count'},
+          placeholdersByKey: {},
+          filesScanned: 1,
+          scanDuration: Duration.zero,
+        );
 
-      final result = await comparator.compare(extracted);
-      expect(result.pluralIssues, contains('item_count'));
-      expect(result.pluralIssues['item_count']!.missingPluralForms, isTrue);
-    });
+        final result = await comparator.compare(extracted);
+        expect(result.pluralIssues, contains('item_count'));
+        expect(result.pluralIssues['item_count']!.missingPluralForms, isTrue);
+      },
+    );
 
     test('no plural issue when JSON value is a proper plural map', () async {
       writeJson('en', 'core.json', {
